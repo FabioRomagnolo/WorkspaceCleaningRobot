@@ -29,7 +29,7 @@ source devel/setup.bash
 
 Launch the robot
 ```
-roslaunch tutorial gazebo.launch
+roslaunch my_package gazebo.launch
 ```
 
 # Ros 2 implementation
