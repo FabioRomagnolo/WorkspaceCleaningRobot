@@ -11,8 +11,8 @@
   </include>
 
   <!-- send robot urdf to param server -->
-  <param name="robot_description_gazebo" command="xacro $(find my_package)/urdf/panda_arm_hand.urdf.xacro attach_offset:=0.055"/>
-  <param name="robot_description" command="xacro $(find my_package)/urdf/panda_arm_hand.urdf.xacro attach_offset:=0.1"/>
+  <param name="robot_description_gazebo" command="xacro $(find my_package)/urdf/panda_arm_hand.urdf.xacro joint8_offset:=0.055"/>
+  <param name="robot_description" command="xacro $(find my_package)/urdf/panda_arm_hand.urdf.xacro joint8_offset:=0.107"/>
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
 
@@ -21,7 +21,7 @@
     respawn="false" output="screen" />
 
   <node name="rviz" pkg="rviz" type="rviz" respawn="false"
-	  args="-d $(find my_package)/rviz/config_file.rviz" output="screen" />
+	  args="-d $(find my_package)/rviz/base_config.rviz" output="screen" />
 
   <include file="$(dirname)/ros_controllers.launch" />
 
