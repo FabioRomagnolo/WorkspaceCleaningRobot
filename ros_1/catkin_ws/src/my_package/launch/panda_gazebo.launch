@@ -11,14 +11,17 @@
   </include>
 
   <!-- send robot urdf to param server -->
-  <param name="robot_description" command="xacro $(find my_package)/urdf/panda_arm_hand.urdf.xacro"/>
+  <param name="robot_description_gazebo" command="xacro $(find my_package)/urdf/panda_arm_hand.urdf.xacro attach_offset:=0.055"/>
+  <param name="robot_description" command="xacro $(find my_package)/urdf/panda_arm_hand.urdf.xacro attach_offset:=0.1"/>
 
-  <!-- Given the published joint states, publish tf for the robot links -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
 
   <!-- push robot_description to factory and spawn robot in gazebo at the origin, change x,y,z arguments to spawn in a different position -->
-  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -x 0 -y 0 -z 0"
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description_gazebo -model robot -x 0 -y 0 -z 0"
     respawn="false" output="screen" />
+
+  <node name="rviz" pkg="rviz" type="rviz" respawn="false"
+	  args="-d $(find my_package)/rviz/config_file.rviz" output="screen" />
 
   <include file="$(dirname)/ros_controllers.launch" />
 

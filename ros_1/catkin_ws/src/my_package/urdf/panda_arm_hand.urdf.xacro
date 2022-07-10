@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="panda">
+  <xacro:arg name="attach_offset" default="0.107" />
+
   <xacro:include filename="$(find my_package)/urdf/panda_arm.xacro"/>
   <xacro:include filename="$(find my_package)/urdf/hand.xacro"/>
   <xacro:panda_arm />
