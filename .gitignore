@@ -1,0 +1,20 @@
+# PyCharm stuff
+.idea
+__pycache__
+
+# Ros 1 workspace build files
+ros_1/catkin_ws/build
+ros_1/catkin_ws/devel
+ros_1/catkin_ws/logs
+ros_1/catkin_ws/.catkin_tools
+
+# Ros 2 workspace build files
+ros_2/build/
+ros_2/install/
+ros_2/log/
+
+# Background matting trained models
+ros_1/catkin_ws/src/my_package/src/BackgroundMatting/trained_models/*
+ros_2/src/my_package/my_package/BackgroundMatting/trained_models/*
+
+
