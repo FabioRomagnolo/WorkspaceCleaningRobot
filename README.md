@@ -1,8 +1,38 @@
-# SmartRoboticsProject
+# WorkspaceCleaningRobot
 
 Possibile physical robot: YuMi IRB 14050
 
-# Ros 2 Foxy requirements
+# Ros 1 implementation
+Before starting, install [Ros 1 Noetic](http://wiki.ros.org/noetic/Installation/Ubuntu) on [Ubuntu 20.04.4 (Focal Fossa)](https://releases.ubuntu.com/20.04/).<br>
+[VMware Workstation 16 Player](https://www.vmware.com/it/products/workstation-player/workstation-player-evaluation.html) is recommended to use, but it is not mandatory.
+
+After the Ros 1 installation, update the dependancies:
+```
+cd ros_1/catkin_ws/
+rosdep update
+rosdep install --from-paths src --ignore-src -r -y --rosdistro noetic
+```
+
+Install the controllers
+```
+sudo apt-get update
+sudo apt-get install ros-noetic-ros-controllers
+```
+
+## How to use
+Build the project
+```
+cd ros_1/catkin_ws/
+catkin build my_package
+source devel/setup.bash
+```
+
+Launch the robot
+```
+roslaunch tutorial gazebo.launch
+```
+
+# Ros 2 implementation
 Before starting, install [Ros 2 Foxy](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html) on [Ubuntu 20.04.4 (Focal Fossa)](https://releases.ubuntu.com/20.04/).<br>
 [VMware Workstation 16 Player](https://www.vmware.com/it/products/workstation-player/workstation-player-evaluation.html) is recommended to use, but it is not mandatory.
 
@@ -17,7 +47,7 @@ Finally, make sure to source the setup file each time you need to work with Ros 
 source /opt/ros/foxy/setup.bash
 ```
 
-# How to use
+## How to use
 Firstly, ensure that all required dependencies are installed. In the root folder, type:
 ```
 rosdep install -i --from-path src --rosdistro <your_ros_distro> -y
@@ -59,7 +89,7 @@ ros2 control list_controllers
 ```
 You should see _claimed_ command interfaces and _active_ controllers.
 
-### Background Matting
+# Background Matting
 In order to use [Background Matting](https://grail.cs.washington.edu/projects/background-matting-v2/#/) network you need to get the pretrained weights _.pth_ files
 and place them into the _src/my_package/my_package/BackgroundMatting/trained_models_ folder.<br>
 You can download the ready-to-use models [here](https://drive.google.com/drive/folders/1vaTjLTk2CoNzMOgeO70Tjsn5DlFF_cJH?usp=sharing).
