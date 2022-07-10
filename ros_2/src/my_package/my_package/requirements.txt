@@ -1,0 +1,9 @@
+# Background Matting requirements
+kornia==0.6.4
+torch==1.11.0   # To install it with cuda: "conda install pytorch=1.11.0 torchvision=0.12.0 cudatoolkit==11.3 -c pytorch"
+torchvision==0.12.0
+opencv-python==4.5.5.64
+pandas==1.4.2
+numpy==1.22.4
+matplotlib==3.5.1
+pillow==9.0.1

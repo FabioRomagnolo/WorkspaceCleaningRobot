@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<robot name="table" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:property name="pos_x" value="4" />
+    <xacro:property name="pos_y" value="3" />
+    <xacro:property name="hands_height" value="1.2" />
+    <xacro:property name="person_width_x" value="0.3" />
+    <xacro:property name="person_width_y" value="0.5" />
+    <xacro:property name="person_height" value="1.8" />
+    <xacro:property name="arm_length" value="1" />
+
+    <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </xacro:macro>
+
+  <link name="person">
+    <visual>
+      <geometry>
+        <box size="${person_width_x} ${person_width_y} ${person_height}"/>
+      </geometry>
+      <origin xyz="0 0 ${person_height/2}" rpy="0 0 0"/>
+      <!-- <material name="white"/> -->
+    </visual>
+
+    <visual>
+        <geometry>
+          <box size="${arm_length} 0.2 0.2"/>
+        </geometry>
+        <origin xyz="0 ${person_width_y/2} ${hands_height}" rpy="0 0 0"/>
+        <!-- <material name="white"/> -->
+      </visual>
+
+      <visual>
+        <geometry>
+          <box size="${arm_length} 0.2 0.2"/>
+        </geometry>
+        <origin xyz="0 ${-person_width_y/2} ${hands_height}" rpy="0 0 0"/>
+        <!-- <material name="white"/> -->
+      </visual>
+
+      <visual>
+        <geometry>
+          <box size="0.3 0.3 0.3"/>
+        </geometry>
+        <origin xyz="${-arm_length/2} ${person_width_y/2} ${hands_height}" rpy="0 0 0"/>
+        <!-- <material name="white"/> -->
+      </visual>
+
+      <visual>
+        <geometry>
+          <box size="0.3 0.3 0.3"/>
+        </geometry>
+        <origin xyz="${-arm_length/2} ${-person_width_y/2} ${hands_height}" rpy="0 0 0"/>
+        <!-- <material name="white"/> -->
+      </visual>
+
+    <collision>
+      <geometry>
+        <box size="${person_width_x} ${person_width_y} ${hands_height}"/>
+      </geometry>
+      <origin xyz="0 0 ${hands_height/2}" rpy="0 0 0"/>
+    </collision>
+    <xacro:default_inertial mass="70"/>
+  </link>
+
+  <joint name="world_to_person" type="prismatic">
+    <axis xyz="1 0 0"/>
+    <limit lower="-3" upper="2" velocity="100" effort="100"/> 
+    <parent link="world"/>
+    <child link="person"/>
+    <origin xyz="${pos_x} ${pos_y} 0" />
+  </joint>
+
+</robot>

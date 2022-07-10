@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:property name="base_height" value="0.2" />
+    <xacro:property name="l1_height" value="0.3" />
+    <xacro:property name="l1_radius" value="0.1" />
+    <xacro:property name="l2_radius" value="0.1" />
+    <xacro:property name="l2_height" value="1" />
+    <xacro:property name="l3_radius" value="0.1" />
+    <xacro:property name="l3_height" value="1" />
+    <xacro:property name="l4_radius" value="0.1" />
+    <xacro:property name="l4_height" value="0.5" />
+    <xacro:property name="l5_radius" value="0.1" />
+    <xacro:property name="l5_height" value="0.5" />
+    <xacro:property name="l6_radius" value="0.1" />
+    <xacro:property name="l6_height" value="0.5" />
+    <xacro:property name="polelen" value="0.2" />
+    <xacro:property name="bodylen" value="0.6" />
+    <xacro:property name="baselen" value="0.4" />
+    <xacro:property name="wheeldiam" value="0.07" />
+
+<!-- This first link called "world" is empty -->
+  <link name="world"></link>
+
+
+  <!-- A simple fixed joint from our empty world link, to our base. -->
+  <!-- The base origin is offset from the world origin. -->
+  <joint name="base_joint" type="fixed">
+      <origin xyz="1.5 1.0 0" rpy="0 0 0"/>
+      <parent link="world"/>
+      <child link="base_link"/>        
+  </joint>
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.5 0.5 ${base_height}"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 ${base_height/2}"/>
+    </visual>
+  </link>
+
+<link name="l1">
+    <visual>
+      <geometry>
+        <cylinder length="${l1_height}" radius="${l1_radius}"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 ${l1_height/2}"/>
+    </visual>
+  </link>
+
+  <link name="l2">
+    <visual>
+      <geometry>
+        <cylinder length="${l2_height}" radius="${l2_radius}"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 ${l2_height/2}"/>
+    </visual>
+  </link>
+
+  <link name="l3">
+    <visual>
+      <geometry>
+        <cylinder length="${l3_height}" radius="${l3_radius}"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 ${l3_height/2}"/>
+    </visual>
+  </link>
+
+  <link name="l4">
+    <visual>
+      <geometry>
+        <cylinder length="${l4_height}" radius="${l4_radius}"/>
+      </geometry>
+      <origin rpy="${pi/2} 0 ${pi/2}" xyz="0 0 0"/>
+    </visual>
+  </link>
+
+  <link name="l5">
+    <visual>
+      <geometry>
+        <cylinder length="${l5_height}" radius="${l5_radius}"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 ${l4_height/2}"/>
+    </visual>
+  </link>
+
+  <link name="l6">
+    <visual>
+      <geometry>
+        <cylinder length="${l6_height}" radius="${l6_radius}"/>
+      </geometry>
+      <origin rpy="${pi/2} 0 ${pi/2}" xyz="0 0 0"/>
+    </visual>
+  </link>
+
+<joint name="j1" type="continuous">
+        <axis xyz="0 0 1"/>
+      <origin xyz="0 0 ${base_height}" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="l1"/>        
+  </joint>
+
+  <joint name="j2" type="revolute">
+    <axis xyz="1 0 0"/>
+    <limit effort="1000.0" lower="${-pi/2}" upper="${pi/2}" velocity="0.5"/>
+    <origin xyz="${l1_radius} 0 ${l1_height-0.15}" rpy="0 0 0"/>
+    <parent link="l1"/>
+    <child link="l2"/>        
+</joint>
+
+<joint name="j3" type="revolute">
+    <axis xyz="1 0 0"/>
+    <limit effort="1000.0" lower="${-2*pi/3}" upper="${2*pi/3}" velocity="0.5"/>
+    <origin xyz="${-l2_radius} 0 ${l2_height-0.2}" rpy="0 0 0"/>
+    <parent link="l2"/>
+    <child link="l3"/>        
+</joint>
+
+<joint name="j4" type="revolute">
+  <axis xyz="1 0 0"/>
+  <limit effort="1000.0" lower="${-2*pi/3}" upper="${2*pi/3}" velocity="0.5"/>
+  <origin xyz="${l3_radius} 0 ${l3_height}" rpy="0 0 0"/>
+  <parent link="l3"/>
+  <child link="l4"/>        
+</joint>
+
+<joint name="j5" type="revolute">
+    <axis xyz="1 0 0"/>
+    <limit effort="1000.0" lower="${-2*pi/3}" upper="${2*pi/3}" velocity="0.5"/>
+    <origin xyz="${l4_radius} 0 ${0.5*l4_radius}" rpy="0 0 0"/>
+    <parent link="l4"/>
+    <child link="l5"/>        
+</joint>
+
+<joint name="j6" type="revolute">
+    <axis xyz="0 0 1"/>
+    <limit effort="1000.0" lower="${-pi/2}" upper="${pi/2}" velocity="0.5"/>
+    <origin xyz="0 0 ${l5_height}" rpy="0 0 0"/>
+    <parent link="l5"/>
+    <child link="l6"/>        
+</joint>
+
+</robot>
+
+
+  

@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<robot name="table" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:property name="o_x" value="0" />
+    <xacro:property name="o_y" value="2" />
+    <xacro:property name="table_height" value="0.2" />
+    <xacro:property name="table_x" value="3" />
+    <xacro:property name="table_y" value="2" />
+    <xacro:property name="leg_height" value="0.8" />
+    <xacro:property name="leg_x" value="0.2" />
+    <xacro:property name="leg_y" value="0.2" />
+
+    <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </xacro:macro>
+
+    <!-- <link name="base_link">
+        <visual>
+          <geometry>
+            <box size="0.5 0.5 ${base_height}"/>
+          </geometry>
+          <origin rpy="0 0 0" xyz="0 0 ${base_height/2}"/>
+        </visual>
+      </link> -->
+
+      <xacro:macro name="leg" params="prefix pos_x pos_y">
+        <link name="${prefix}_leg">
+          <visual>
+            <geometry>
+              <box size="${leg_x} ${leg_y} ${leg_height}"/>
+            </geometry>
+            <origin xyz="0 0 ${leg_height/2}" rpy="0 0 0"/>
+            <!-- <material name="white"/> -->
+          </visual>
+          <collision>
+            <geometry>
+              <box size="${leg_x} ${leg_y} ${leg_height}"/>
+            </geometry>
+            <origin xyz="0 0 ${leg_height/2}" rpy="0 0 0"/>
+          </collision>
+          <xacro:default_inertial mass="10"/>
+        </link>
+    
+        <joint name="world_to_${prefix}_leg" type="fixed">
+          <parent link="world"/>
+          <child link="${prefix}_leg"/>
+          <origin xyz="${pos_x} ${pos_y} 0" />
+        </joint>
+
+      </xacro:macro>
+
+      <xacro:macro name="place_legs" params="pos_x pos_y table_x table_y">
+      <xacro:leg prefix="sw" pos_x="${pos_x+leg_x/2}" pos_y="${pos_y+leg_y/2}" />
+    <xacro:leg prefix="se" pos_x="${pos_x+table_x-leg_x/2}" pos_y="${pos_y+leg_y/2}" />
+    <xacro:leg prefix="nw" pos_x="${pos_x+leg_x/2}" pos_y="${pos_y+table_y-leg_y/2}" />
+    <xacro:leg prefix="ne" pos_x="${pos_x+table_x-leg_x/2}" pos_y="${pos_y+table_y-leg_y/2}" />
+</xacro:macro>
+
+<xacro:place_legs pos_x="${o_x}" pos_y="${o_y}" table_x="${table_x}" table_y="${table_y}" />
+
+<link name="table">
+    <visual>
+      <geometry>
+        <box size="${table_x} ${table_y} ${table_height}"/>
+      </geometry>
+      <origin xyz="${table_x/2} ${table_y/2} ${table_height/2+leg_height}" rpy="0 0 0"/>
+      <!-- <material name="white"/> -->
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${table_x} ${table_y} ${table_height}"/>
+      </geometry>
+      <origin xyz="${table_x/2} ${table_y/2} ${table_height/2+leg_height}" rpy="0 0 0"/>
+    </collision>
+    <xacro:default_inertial mass="10"/>
+  </link>
+
+  <joint name="world_to_table" type="fixed">
+    <parent link="world"/>
+    <child link="table"/>
+    <origin xyz="${o_x} ${o_y} 0" />
+  </joint>
+
+
+
+    
+</robot>
