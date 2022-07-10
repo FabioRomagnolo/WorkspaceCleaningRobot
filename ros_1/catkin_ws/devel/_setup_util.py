@@ -1,1 +1,0 @@
-/home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws/devel/.private/catkin_tools_prebuild/_setup_util.py
