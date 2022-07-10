@@ -1,0 +1,6 @@
+my_package
+/home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws/devel/.private/my_package/cmake.lock /home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws/devel/./cmake.lock
+/home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws/devel/.private/my_package/lib/pkgconfig/my_package.pc /home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws/devel/lib/pkgconfig/my_package.pc
+/home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws/devel/.private/my_package/lib/my_package/my_publisher /home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws/devel/lib/my_package/my_publisher
+/home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws/devel/.private/my_package/share/my_package/cmake/my_packageConfig.cmake /home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws/devel/share/my_package/cmake/my_packageConfig.cmake
+/home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws/devel/.private/my_package/share/my_package/cmake/my_packageConfig-version.cmake /home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws/devel/share/my_package/cmake/my_packageConfig-version.cmake

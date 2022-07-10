@@ -1,0 +1,6 @@
+devel_space: /home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws/devel
+install: false
+install_space: /home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws/install
+profile: default
+source_space: /home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws/src
+workspace: /home/fabio/Desktop/WorkspaceCleaningRobot/ros_1/catkin_ws
