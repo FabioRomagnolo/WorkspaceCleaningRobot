@@ -61,7 +61,6 @@
 
 <xacro:place_legs pos_x="${o_x}" pos_y="${o_y}" table_x="${table_x}" table_y="${table_y}" />
 
-<link name="world" />
 <link name="table">
     <visual>
       <geometry>
