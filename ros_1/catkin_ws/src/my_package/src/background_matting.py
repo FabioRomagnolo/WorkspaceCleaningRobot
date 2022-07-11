@@ -1,6 +1,9 @@
 import torch
 import os
 import time
+import argparse
+from torchvision import transforms as T
+from torchvision.transforms.functional import to_pil_image, to_tensor
 from BackgroundMatting.utils.model_utils import load_inference_model, get_dummy_inputs
 from torchvision.transforms.functional import to_pil_image
 
@@ -10,10 +13,18 @@ MODEL_PATHS = {
     'resnet50': os.path.join(MODELS_DIR, 'pytorch_resnet50.pth'),
 }
 
+# --------------- Arguments ---------------
+parser = argparse.ArgumentParser(description='Background Matting test')
+parser.add_argument('--model-type', type=str, default='mattingrefine', choices=['mattingbase', 'mattingrefine'])
+parser.add_argument('--model-backbone', type=str, default='resnet50', choices=['resnet50', 'mobilenetv2'])
+parser.add_argument('--input-resolution', type=str, default='nhd', choices=['nhd', 'hd', '4k'])
+
+args = parser.parse_args()
+
 
 class BackgroundMatting:
     def __init__(self,
-                 backbone='mobilenetv2',
+                 backbone='resnet50',
                  model_type='mattingrefine',
                  input_resolution='nhd',
                  device=torch.device('cpu')):
@@ -24,6 +35,22 @@ class BackgroundMatting:
             device=device,
         )
 
+    def preproccesing(self, *tensors):
+        h, w = 360, 640     # NHD resolution
+        if self.model.input_resolution == 'hd':
+            h, w = 720, 1280
+        elif self.model.input_resolution == '4k':
+            h, w = 2160, 3840
+
+        for t in tensors:
+            # Converting to PIL image
+            pic = to_pil_image(t.squeeze(0))
+            # Resizing pic
+            resized_pic = T.Resize((h, w))(pic)
+            # Converting back to Torch tensor
+            t = to_tensor(resized_pic).unsqueeze(0)
+        return tensors
+
     def matting(self, src, bgr):
         """
         :param src: (B, 3, H, W) the source image. Channels are RGB values normalized to 0 ~ 1.
@@ -31,23 +58,27 @@ class BackgroundMatting:
         :return: (B, 4, H, W) the transparent foreground prediction (foreground + alpha).
                  Channels are RGBA values normalized to 0 ~ 1.
         """
+        # Preprocessing
+        src, bgr = self.preproccesing(src, bgr)
+        # Inference
         with torch.no_grad():
             tfgr = self.model(src, bgr)
         return tfgr
 
 
-def dummy_test(model_type='mattingrefine', resolution='nhd'):
+def dummy_test(model_type='mattingrefine', backbone='resnet50', resolution='nhd'):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    print(f"- Loading model {model_type} on {device} ...")
+    print(f"- Loading model {model_type} with backbone {backbone} on {device} ...")
 
-    matting = BackgroundMatting(model_type=model_type,
+    model = BackgroundMatting(model_type=model_type,
+                                backbone=backbone,
                                 input_resolution=resolution,
                                 device=device)
     src, bgr = get_dummy_inputs(resolution=resolution, device=device)
 
-    # Inference
+    # Preprocessing + inference
     start_time = time.time()
-    tfgr = matting.matting(src, bgr)
+    tfgr = model.matting(src, bgr)
     inference_time = time.time() - start_time
     print(f"Model took up {inference_time} seconds on {device} to inference!")
 
@@ -60,4 +91,4 @@ if __name__ == '__main__':
     if not torch.cuda.is_available():
         print("WARNING! Unable to use the GPU for inference. This will slow down performances ...")
     # Testing with dummy images
-    dummy_test()
+    dummy_test(model_type=args.model_type, backbone=args.model_backbone, resolution=args.input_resolution)

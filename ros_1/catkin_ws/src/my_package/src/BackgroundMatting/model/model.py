@@ -192,6 +192,7 @@ class MattingRefine(MattingBase):
         elif input_resolution == '4k':
             backbone_scale = 1 / 8
             refine_sample_pixels = 320_000
+        self.input_resolution = input_resolution
         self.backbone_scale = backbone_scale
         assert self.backbone_scale <= 1 / 2, 'backbone_scale should not be greater than 1/2'
 
