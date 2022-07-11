@@ -16,7 +16,7 @@ rosdep install --from-paths src --ignore-src -r -y --rosdistro noetic
 Install the controllers
 ```
 sudo apt-get update
-sudo apt-get install ros-noetic-ros-controllers
+sudo apt-get install ros-noetic-ros-controllers ros-noetic-rqt-joint-trajectory-controller
 ```
 
 ## How to use
