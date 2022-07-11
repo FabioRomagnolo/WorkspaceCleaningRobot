@@ -5,7 +5,7 @@ from torchvision import transforms as T
 from ..model import MattingBase, MattingRefine
 
 AVAILABLE_BACKBONES = ['mobilenetv2', 'resnet50']
-SAMPLE_IMAGES_DIR = os.path.join('BackgroundMatting', 'sample_images')
+SAMPLE_IMAGES_DIR = 'sample_images'
 
 
 def load_inference_model(path_to_model,
@@ -68,7 +68,7 @@ def image_file_to_tensor(path_to_file, precision, device):
     return tensor.to(precision).to(device)
 
 
-def get_dummy_inputs(resolution='hd', precision=torch.float32, device='cuda'):
+def get_dummy_inputs(resolution='hd', precision=torch.float32, device='cpu'):
     """
     Get dummy inputs for the Background Matting network.
     :param resolution: Resolution of the dummy inputs. It can be:
