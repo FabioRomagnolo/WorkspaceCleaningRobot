@@ -11,13 +11,12 @@
   </include>
 
   <!-- send robot urdf to param server -->
-  <param name="robot_description_gazebo" command="xacro $(find my_package)/urdf/panda_arm_hand.urdf.xacro joint8_offset:=0.055"/>
-  <param name="robot_description" command="xacro $(find my_package)/urdf/panda_arm_hand.urdf.xacro joint8_offset:=0.107"/>
+  <param name="robot_description" command="xacro $(find my_package)/urdf/panda_arm_hand.urdf.xacro"/>
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
 
   <!-- push robot_description to factory and spawn robot in gazebo at the origin, change x,y,z arguments to spawn in a different position -->
-  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description_gazebo -model robot -x 0 -y 0 -z 0"
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -x 0 -y 0 -z 0"
     respawn="false" output="screen" />
 
   <node name="rviz" pkg="rviz" type="rviz" respawn="false"

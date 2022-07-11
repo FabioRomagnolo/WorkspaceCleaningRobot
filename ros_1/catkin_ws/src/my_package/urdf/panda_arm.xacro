@@ -11,12 +11,6 @@
     <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
     <dynamics damping="${joint_damping}"/>
   </joint>
-      <joint name="${arm_id}_joint_${connected_to}" type="fixed">
-        <parent link="${connected_to}"/>
-        <child link="${arm_id}_link0"/>
-        <origin rpy="${rpy}" xyz="${xyz}"/>
-        <dynamics damping="${joint_damping}"/>
-      </joint>
     </xacro:unless>
     <link name="${arm_id}_link0">
       <visual>
@@ -219,9 +213,7 @@
     </joint>
     <link name="${arm_id}_link8"/>
     <joint name="${arm_id}_joint8" type="fixed">
-      <!-- <origin rpy="0 0 0" xyz="0 0 0.107"/> -->
-      <!-- <origin rpy="0 0 0" xyz="0 0 0.055"/> -->
-      <origin rpy="0 0 0" xyz="0 0 $(arg joint8_offset)"/>
+      <origin rpy="0 0 0" xyz="0 0 0.107"/>
       <parent link="${arm_id}_link7"/>
       <child link="${arm_id}_link8"/>
       <axis xyz="0 0 0"/>
