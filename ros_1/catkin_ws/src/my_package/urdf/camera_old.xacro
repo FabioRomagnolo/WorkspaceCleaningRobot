@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<robot name="camera" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:property name="camera_support_height" value="3" />
+    <xacro:property name="camera_support_width" value="0.1" />
+    <xacro:property name="camera_support_radius" value="0.15" />
+    <xacro:property name="camera_x" value="${table_x/2}" />
+    <xacro:property name="camera_y" value="5" />
+    <xacro:property name="camera_z" value="3" />
+
+    <link name="camera_support">
+        <visual>
+          <geometry>
+            <box size="${camera_support_width} ${camera_support_width} ${camera_support_height}"/>
+          </geometry>
+          <origin rpy="0 0 0" xyz="0 0 ${camera_support_height/2}"/>
+        </visual>
+
+        <!-- <visual>
+            <geometry>
+                <sphere radius="${camera_support_radius}"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 ${camera_support_height}"/>
+          </visual> -->
+
+          <visual>
+            <geometry>
+                <box size="${camera_support_width} ${camera_support_width} 0.5"/>
+            </geometry>
+            <origin rpy="0 ${60*pi/180} ${-pi/2}" xyz="0 0 ${camera_support_height}"/>
+          </visual>
+          
+    
+        <collision>
+          <geometry>
+            <box size="${camera_support_width} ${camera_support_width} ${camera_support_height}"/>
+          </geometry>
+          <origin rpy="0 0 0" xyz="0 0 ${camera_support_height/2}"/>
+        </collision>
+
+        <collision>
+            <geometry>
+                <box size="${camera_support_width} ${camera_support_width} 0.5"/>
+            </geometry>
+            <origin rpy="0 ${60*pi/180} ${-pi/2}" xyz="0 0 ${camera_support_height}"/>
+          </collision>
+
+
+
+        <xacro:default_inertial mass="10"/>
+      </link>
+
+  <link name="camera_link">
+    <visual>
+        <origin xyz="-0.03 0 0" rpy="0 0 0"/>
+        <geometry>
+            <box size="0.06 0.15 0.15" />
+        </geometry>
+        <!-- <material name="white" /> -->
+    </visual>
+    <visual>
+        <origin xyz="0.03 0 0" rpy="0 ${pi/2} 0"/>
+        <geometry>
+            <cylinder length="0.06" radius="0.04" />
+        </geometry>
+        <!-- <material name="blue" /> -->
+    </visual>
+    <collision>
+        <origin xyz="0.0 0 0" rpy="0 0 0"/>
+        <geometry>
+            <box size="0.12 0.15 0.15" />
+        </geometry>
+    </collision>
+</link>
+
+<joint name="world_to_camera_support" type="fixed">
+    <origin xyz="${camera_x} ${camera_y} 0" rpy="0 0 0"/>
+    <parent link="world"/>
+    <child link="camera_support"/>        
+  </joint>
+
+  <joint name="camera_joint" type="fixed">
+    <origin xyz="0 ${-camera_support_radius} ${camera_z}" rpy="0 ${60*pi/180} ${-pi/2}"/>
+    <parent link="camera_support"/>
+    <child link="camera_link"/>        
+  </joint>
+
+<!-- <joint name="camera_joint" type="fixed">
+  <origin xyz="${camera_x} ${camera_y} ${camera_z}" rpy="0 ${60*pi/180} ${-pi/2}"/>
+  <parent link="world"/>
+  <child link="camera_link"/>        
+</joint> -->
+
+    
+</robot>

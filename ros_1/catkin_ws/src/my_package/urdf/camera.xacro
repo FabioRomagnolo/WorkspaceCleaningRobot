@@ -1,95 +1,90 @@
 <?xml version="1.0"?>
-<robot name="table" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="camera" xmlns:xacro="http://ros.org/wiki/xacro">
 
-    <xacro:property name="camera_support_height" value="3" />
-    <xacro:property name="camera_support_width" value="0.1" />
-    <xacro:property name="camera_support_radius" value="0.15" />
-    <xacro:property name="camera_x" value="${table_x/2}" />
-    <xacro:property name="camera_y" value="5" />
-    <xacro:property name="camera_z" value="3" />
+    <!-- camera_xyz represents the position of the camera along x, y and z axis -->
+    <xacro:property name="camera_xyz" value="1 0 2" />
+    <!-- camera_rpy represents the orientation of the camera -->
+    <xacro:property name="camera_rpy" value="0 ${pi/2} 0" />
 
-    <link name="camera_support">
-        <visual>
-          <geometry>
-            <box size="${camera_support_width} ${camera_support_width} ${camera_support_height}"/>
-          </geometry>
-          <origin rpy="0 0 0" xyz="0 0 ${camera_support_height/2}"/>
-        </visual>
+    <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </xacro:macro>
 
-        <!-- <visual>
-            <geometry>
-                <sphere radius="${camera_support_radius}"/>
-            </geometry>
-            <origin rpy="0 0 0" xyz="0 0 ${camera_support_height}"/>
-          </visual> -->
-
-          <visual>
-            <geometry>
-                <box size="${camera_support_width} ${camera_support_width} 0.5"/>
-            </geometry>
-            <origin rpy="0 ${60*pi/180} ${-pi/2}" xyz="0 0 ${camera_support_height}"/>
-          </visual>
-          
-    
-        <collision>
-          <geometry>
-            <box size="${camera_support_width} ${camera_support_width} ${camera_support_height}"/>
-          </geometry>
-          <origin rpy="0 0 0" xyz="0 0 ${camera_support_height/2}"/>
-        </collision>
-
-        <collision>
-            <geometry>
-                <box size="${camera_support_width} ${camera_support_width} 0.5"/>
-            </geometry>
-            <origin rpy="0 ${60*pi/180} ${-pi/2}" xyz="0 0 ${camera_support_height}"/>
-          </collision>
-
-
-
-        <xacro:default_inertial mass="10"/>
-      </link>
-
+  <link name="world" />
   <link name="camera_link">
-    <visual>
-        <origin xyz="-0.03 0 0" rpy="0 0 0"/>
-        <geometry>
-            <box size="0.06 0.15 0.15" />
-        </geometry>
-        <!-- <material name="white" /> -->
-    </visual>
-    <visual>
-        <origin xyz="0.03 0 0" rpy="0 ${pi/2} 0"/>
-        <geometry>
-            <cylinder length="0.06" radius="0.04" />
-        </geometry>
-        <!-- <material name="blue" /> -->
-    </visual>
-    <collision>
-        <origin xyz="0.0 0 0" rpy="0 0 0"/>
-        <geometry>
-            <box size="0.12 0.15 0.15" />
-        </geometry>
-    </collision>
-</link>
+      <visual>
+          <origin xyz="-0.03 0 0" rpy="0 0 0"/>
+          <geometry>
+              <box size="0.06 0.15 0.15" />
+          </geometry>
+          <!-- <material name="white" /> -->
+      </visual>
+      <visual>
+          <origin xyz="0.03 0 0" rpy="0 ${pi/2} 0"/>
+          <geometry>
+              <cylinder length="0.06" radius="0.04" />
+          </geometry>
+          <!-- <material name="blue" /> -->
+      </visual>
+      <collision>
+          <origin xyz="0.0 0 0" rpy="0 0 0"/>
+          <geometry>
+              <box size="0.12 0.15 0.15" />
+          </geometry>
+      </collision>
+      <xacro:default_inertial mass="1" />
+  </link>
 
-<joint name="world_to_camera_support" type="fixed">
-    <origin xyz="${camera_x} ${camera_y} 0" rpy="0 0 0"/>
+<joint name="world_to_camera" type="fixed">
+    <origin xyz="${camera_xyz}" rpy="${camera_rpy}"/>
     <parent link="world"/>
-    <child link="camera_support"/>        
+    <child link="camera_link"/>
   </joint>
 
-  <joint name="camera_joint" type="fixed">
-    <origin xyz="0 ${-camera_support_radius} ${camera_z}" rpy="0 ${60*pi/180} ${-pi/2}"/>
-    <parent link="camera_support"/>
-    <child link="camera_link"/>        
-  </joint>
+  <!-- First, create the link and joint for the optical frame -->
+  <joint name="camera_optical_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="-1.571 0 -1.571" />
+    <parent link="camera_link" />
+    <child link="camera_link_optical" />
+</joint>
 
-<!-- <joint name="camera_joint" type="fixed">
-  <origin xyz="${camera_x} ${camera_y} ${camera_z}" rpy="0 ${60*pi/180} ${-pi/2}"/>
-  <parent link="world"/>
-  <child link="camera_link"/>        
-</joint> -->
+<link name="camera_link_optical"></link>
 
+<!-- Add a gazebo tag for the ORIGINAL camera_link (but in the plugin we reference the optical frame so that ROS can orient things correctly) -->
+<!-- Within the gazebo tag we have the sensor tag, and inside that there is (among other things) the camera tag with the camera parameters, 
+        and the plugin tag with some extra parameters the plugin needs. -->
+<!-- Note that although visualise is set to true, it won't actually visualise the depth camera in gazebo. To see the preview, 
+        try swapping "depth" to "camera"-->
+        <gazebo reference="camera_link">
+            <sensor type="camera" name="my_camera">
+                <update_rate>20</update_rate>
+                <visualize>true</visualize>
+                <camera name="cam">
+                    <horizontal_fov>1.3962634</horizontal_fov>
+                    <image>
+                        <width>640</width>
+                        <height>480</height>
+                        <format>R8B8G8</format>
+                    </image>
+                    <clip>
+                        <near>0.02</near>
+                        <far>300</far>
+                    </clip>
+                    <noise>
+                        <type>gaussian</type>
+                        <mean>0.0</mean>
+                        <stddev>0.007</stddev>
+                    </noise>
+                </camera>
+                <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                    <frame_name>camera_link_optical</frame_name>
+                    <min_depth>0.1</min_depth>
+                    <max_depth>500</max_depth>
+                </plugin>
+            </sensor>
+        </gazebo>
     
 </robot>

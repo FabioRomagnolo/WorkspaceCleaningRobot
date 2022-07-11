@@ -1,18 +1,14 @@
 <?xml version="1.0"?>
 <robot name="table" xmlns:xacro="http://ros.org/wiki/xacro">
 
-    <!-- o_x is the position of a leg of the table along x axis -->
-    <xacro:property name="o_x" value="0.5" />
-    <!-- o_y is the position of a leg of the table along y axis -->
-    <xacro:property name="o_y" value="-0.7" />
-    <xacro:property name="table_height" value="0.1" />
-    <!-- table_x is the width of the table along x axis -->
-    <xacro:property name="table_x" value="1" />
-    <!-- table_y is the width of the table along y axis -->
-    <xacro:property name="table_y" value="1.4" />
-    <xacro:property name="leg_height" value="0.3" />
-    <xacro:property name="leg_x" value="0.1" />
-    <xacro:property name="leg_y" value="0.1" />
+    <xacro:property name="o_x" value="0" />
+    <xacro:property name="o_y" value="2" />
+    <xacro:property name="table_height" value="0.2" />
+    <xacro:property name="table_x" value="3" />
+    <xacro:property name="table_y" value="2" />
+    <xacro:property name="leg_height" value="0.8" />
+    <xacro:property name="leg_x" value="0.2" />
+    <xacro:property name="leg_y" value="0.2" />
 
     <xacro:macro name="default_inertial" params="mass">
     <inertial>

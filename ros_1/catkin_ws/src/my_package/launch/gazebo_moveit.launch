@@ -29,4 +29,6 @@
   <!-- Load ROS controllers -->
   <include file="$(dirname)/ros_controllers.launch"/>
 
+  <include file="$(dirname)/setup_environment.launch"/>
+
 </launch>
