@@ -1,5 +1,5 @@
 controller_list:
-  - name: arm_controller
+  - name: arm_position_controller
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
     default: True
@@ -11,9 +11,3 @@ controller_list:
       - panda_joint5
       - panda_joint6
       - panda_joint7
-  - name: hand_controller
-    action_ns: follow_joint_trajectory
-    type: FollowJointTrajectory
-    default: True
-    joints:
-      - panda_finger_joint1
