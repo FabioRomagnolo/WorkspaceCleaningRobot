@@ -484,13 +484,13 @@ def main():
         )
         tutorial = MoveGroupPythonInterfaceTutorial()
 
-        # input(
-        #     "============ Press `Enter` to execute a movement using a joint state goal ..."
-        # )
-        # tutorial.go_to_joint_state()
+        input(
+            "============ Press `Enter` to execute a movement using a joint state goal ..."
+        )
+        tutorial.go_to_joint_state()
 
-        # input("============ Press `Enter` to execute a movement using a pose goal ...")
-        # tutorial.go_to_pose_goal()
+        input("============ Press `Enter` to execute a movement using a pose goal ...")
+        tutorial.go_to_pose_goal()
 
         # input("============ Press `Enter` to plan and display a Cartesian path ...")
         # cartesian_plan, fraction = tutorial.plan_cartesian_path()
