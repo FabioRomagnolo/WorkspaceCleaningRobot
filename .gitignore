@@ -17,4 +17,7 @@ ros_2/log/
 ros_1/catkin_ws/src/my_package/src/BackgroundMatting/trained_models/*
 ros_2/src/my_package/my_package/BackgroundMatting/trained_models/*
 
+# Matting cache dirs
+ros_1/catkin_ws/src/my_package/src/BackgroundMatting/__pycache__
+ros_1/catkin_ws/src/my_package/src/__pycache__
 
