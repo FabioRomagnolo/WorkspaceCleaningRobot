@@ -14,5 +14,26 @@
   <node name="spawn_camera_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param camera_description -model camera $(arg world_pose)"
     respawn="false" output="screen" />
 
+    <!-- Person -->
+  <param name="person_description" command="xacro $(find my_package)/urdf/person_new_1.xacro" />
+
+  <node name="spawn_person_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param person_description -model person $(arg world_pose)"
+    respawn="false" output="screen" />
+
+    <!-- Load joint controller configurations from YAML file to parameter server -->
+    <rosparam file="$(find my_package)/config/person_controllers.yaml" command="load"/>
+
+    <!-- load the controllers -->
+  <node name="person_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+  output="screen" ns="/person" args="x_axis_joint_position_controller y_axis_joint_position_controller joint_state_controller"/>
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <!-- <node name="person_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen">
+    <remap from="/joint_states" to="/person/joint_states" />
+    <remap from="/robot_description" to="/person/robot_description" />
+  </node> -->
+
+
 
 </launch>

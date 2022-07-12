@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<robot name="person" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:property name="xyz" value="2 2 0" />
+    <xacro:property name="person_width_x" value="0.3" />
+    <xacro:property name="person_width_y" value="0.5" />
+    <xacro:property name="person_height" value="1.5" />
+
+    <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </xacro:macro>
+
+    <link name="world" />
+
+    <link name="x_axis_link">
+        <visual>
+          <geometry>
+            <box size="1.0 1.0 0.01"/>
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+        </visual>
+        <collision>
+          <geometry>
+            <box size="1.0 1.0 0.01"/>
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+        </collision>
+        <xacro:default_inertial mass="3"/>
+    </link>
+
+    <gazebo reference="x_axis_link">
+      <material>Gazebo/White</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+  </gazebo>
+
+  <joint name="x_axis_joint" type="prismatic">
+    <axis xyz="1 0 0"/>
+    <limit lower="-5.0" upper="5.0" velocity="100" effort="10000"/> 
+    <parent link="world"/>
+    <child link="x_axis_link"/>
+    <origin xyz="0 0 0.01" />
+    <dynamics damping="1.0"/>
+  </joint>
+
+  <transmission name="person_tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="x_axis_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="person_motor1">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+</transmission>
+
+    <link name="y_axis_link">
+      <visual>
+        <geometry>
+          <box size="1.0 1.0 0.01"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="1.0 1.0 0.01"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </collision>
+      <xacro:default_inertial mass="3"/>
+  </link>
+
+  <gazebo reference="y_axis_link">
+    <material>Gazebo/White</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+</gazebo>
+
+<joint name="y_axis_joint" type="prismatic">
+  <axis xyz="0 1 0"/>
+  <limit lower="-5.0" upper="5.0" velocity="100" effort="10000"/> 
+  <parent link="x_axis_link"/>
+  <child link="y_axis_link"/>
+  <origin xyz="0 0 0.01" />
+  <dynamics damping="1.0"/>
+</joint>
+
+<transmission name="person_tran2">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="y_axis_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="person_motor2">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+
+  <link name="person">
+    <visual>
+      <geometry>
+        <mesh filename="/usr/share/gazebo-11/media/models/stand.dae" scale="0.5 0.5 0.5"/>
+      </geometry>
+      <origin xyz="0 0 ${person_height/2}" rpy="0 0 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${person_width_x} ${person_width_y} ${person_height}"/>
+      </geometry>
+      <origin xyz="0 0 ${person_height/2}" rpy="0 0 0"/>
+      <surface>
+        <friction>
+          <ode>
+            <mu>0.01</mu>
+            <mu2>0.01</mu2>
+          </ode>
+        </friction>
+      </surface>
+    </collision>
+    <xacro:default_inertial mass="70"/>
+  </link>
+
+  <gazebo reference="person">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+</gazebo>
+
+  <joint name="person_link_joint" type="fixed">
+    <parent link="y_axis_link"/>
+    <child link="person"/>
+    <origin xyz="0 0 0.025" />
+  </joint>
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/person</robotNamespace>
+      <robotParam>/person_description</robotParam>
+    </plugin>
+  </gazebo>
+
+</robot>

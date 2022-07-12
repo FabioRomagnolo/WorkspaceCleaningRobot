@@ -1,0 +1,38 @@
+<launch>
+
+    <!-- specify the planning pipeline -->
+    <arg name="pipeline" default="ompl" />
+  
+    <!-- Gazebo specific options -->
+    <arg name="gazebo_gui" default="true"/>
+    <arg name="paused" default="false"/>
+  
+    <!-- launch the gazebo simulator and spawn the robot -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" default="worlds/empty.world"/>
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="gui" value="$(arg gazebo_gui)"/>
+      </include>
+    
+      <!-- send robot urdf to param server -->
+      <param name="robot_description" command="xacro $(find my_package)/urdf/person_new_1.xacro"/>
+    
+      <!-- <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" /> -->
+    
+      <!-- push robot_description to factory and spawn robot in gazebo at the origin, change x,y,z arguments to spawn in a different position -->
+      <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -x 0 -y 0 -z 0"
+        respawn="false" output="screen" />
+    
+
+        <!-- Load joint controller configurations from YAML file to parameter server -->
+    <rosparam file="$(find my_package)/config/person_controllers.yaml" command="load"/>
+
+    <!-- load the controllers -->
+  <node name="person_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+  output="screen" ns="/person" args="x_axis_joint_position_controller y_axis_joint_position_controller joint_state_controller"/>
+  
+      <!-- <node name="rviz" pkg="rviz" type="rviz" respawn="false"
+          args="-d $(find my_package)/rviz/base_config.rviz" output="screen" /> -->
+    
+      
+  </launch>
