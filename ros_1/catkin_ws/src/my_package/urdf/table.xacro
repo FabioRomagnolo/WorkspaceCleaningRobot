@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <robot name="table" xmlns:xacro="http://ros.org/wiki/xacro">
 
-    <!-- o_x is the position of a leg of the table along x axis -->
+    <!-- o_x is the position of the table of the table along x axis -->
     <xacro:property name="o_x" value="0.5" />
-    <!-- o_y is the position of a leg of the table along y axis -->
+    <!-- o_y is the position of the table of the table along y axis -->
     <xacro:property name="o_y" value="-0.7" />
     <xacro:property name="table_height" value="0.1" />
     <!-- table_x is the width of the table along x axis -->
