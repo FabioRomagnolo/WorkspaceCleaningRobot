@@ -10,7 +10,7 @@ import PIL
 import time
 from torchvision.transforms.functional import to_pil_image, to_tensor
 
-TMP_DIR = os.path.join('..', 'tmp')
+OUTPUTS_DIR = os.path.join('..', '..', 'outputs')
 BACKBONE = 'resnet50'
 
 # Initializing BackgroundMatting model
@@ -27,11 +27,6 @@ def image2array(image):
 	"""
 	Method to convert image message to Numpy RGB array.
 	"""
-	#print(image.data)
-	#print(image.width) # 640
-	#print(image.height) # 480
-	#print(len(image.data)) # 921600 = 640*480*3
-	#print(image.encoding) # bgr8
 	image_data = list(image.data)
 	image_array = np.array(image_data).astype('uint8')
 	bgr_image = image_array.reshape(image.height, image.width, 3)
@@ -44,14 +39,11 @@ def callback(image):
 	
 	# Converting image message to Numpy RGB array
 	rgb_array = image2array(image)
-	# Saving image in tmp folder
-	PIL.Image.fromarray(rgb_array).save(os.path.join(TMP_DIR, 'image_raw.png'))
-	# plt.imshow(rgb_array)
-	# plt.savefig(os.path.join(TMP_DIR, 'image_raw'))
-	# plt.show()
+	# Saving image in outputs folder
+	PIL.Image.fromarray(rgb_array).save(os.path.join(OUTPUTS_DIR, 'image_raw.png'))
 
-	# TODO: Get the background image from another publisher or from the TMP directory
-	# The following lines are ONLY FOR BACKGROUND MATTING TESTING!
+	# TODO: Get the background image from another publisher or from a directory
+	# The following inputs are ONLY FOR BACKGROUND MATTING TESTING!
 	src, bgr = get_dummy_inputs(resolution='nhd')
 	
 	# Inference
@@ -62,8 +54,8 @@ def callback(image):
 	print(f"Matting took up {inference_seconds}!")
 
 	# Saving matted image
-	print("- Saving matted image to ", os.path.join(TMP_DIR, 'matted_image_raw.png'))
-	to_pil_image(tfgr.squeeze(0)).save(os.path.join(TMP_DIR, 'matted_image_raw.png'))
+	print("- Saving matted image to ", os.path.join(OUTPUTS_DIR, 'matted_image_raw.png'))
+	to_pil_image(tfgr.squeeze(0)).save(os.path.join(OUTPUTS_DIR, 'matted_image_raw.png'))
 
 	# Waiting for inputs
 	input("Press any key to continue listening images")
@@ -81,8 +73,8 @@ def listener():
 	rospy.spin()
 
 if __name__ == '__main__':
-	# Preparing tmp directory
-	if not os.path.exists(TMP_DIR):
-		os.mkdir(TMP_DIR)
+	# Preparing outputs directory
+	if not os.path.exists(OUTPUTS_DIR):
+		os.mkdir(OUTPUTS_DIR)
 	# Listening to raw images
 	listener()
