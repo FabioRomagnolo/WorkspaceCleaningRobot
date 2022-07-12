@@ -12,6 +12,7 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 
 catkin_install_python(PROGRAMS
   scripts/test_moveit.py
+  scripts/test_hands_detection.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
