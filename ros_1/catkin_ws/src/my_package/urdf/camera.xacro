@@ -2,7 +2,8 @@
 <robot name="camera" xmlns:xacro="http://ros.org/wiki/xacro">
 
     <!-- camera_xyz represents the position of the camera along x, y and z axis -->
-    <xacro:property name="camera_xyz" value="1 0 2" />
+    <!--<xacro:property name="camera_xyz" value="1 0 2"/>-->
+    <xacro:property name="camera_xyz" value="1 0 1.55"/>
     <!-- camera_rpy represents the orientation of the camera -->
     <xacro:property name="camera_rpy" value="0 ${pi/2} 0" />
 
@@ -66,7 +67,7 @@
                     <horizontal_fov>1.3962634</horizontal_fov>
                     <image>
                         <width>640</width>
-                        <height>480</height>
+                        <height>360</height>
                         <format>R8B8G8</format>
                     </image>
                     <clip>
