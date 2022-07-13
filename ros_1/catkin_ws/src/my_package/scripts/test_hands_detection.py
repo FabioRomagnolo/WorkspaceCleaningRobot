@@ -10,6 +10,7 @@ import os
 import matplotlib.pyplot as plt
 from torchvision import transforms
 import time
+import sys
 
 class HandsDetectionNode:
     def __init__(self):
@@ -54,6 +55,7 @@ class HandsDetectionNode:
 
     def image_callback(self, data):
         rospy.loginfo(rospy.get_caller_id() + "Image received!")
+        #print(sys.getsizeof(data))
 
         # Converting image message to Numpy RGB array
         rgb_array = self.image2array(data)
@@ -87,6 +89,6 @@ class HandsDetectionNode:
 if __name__ == '__main__':
     hands_detection_node = HandsDetectionNode()
     rospy.init_node('test_hand_detection', anonymous=True)
-    rospy.Subscriber("/image_raw", Image, hands_detection_node.image_callback)
+    rospy.Subscriber("/image_raw", Image, hands_detection_node.image_callback, queue_size=1, buff_size=96)
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()

@@ -13,7 +13,7 @@
     </inertial>
   </xacro:macro>
 
-    <link name="world" />
+    <!-- <link name="world" /> -->
 
     <link name="x_axis_link">
         <visual>
@@ -43,7 +43,7 @@
     <parent link="world"/>
     <child link="x_axis_link"/>
     <origin xyz="0 0 0.01" />
-    <dynamics damping="1.0"/>
+    <dynamics damping="10.0"/>
   </joint>
 
   <transmission name="person_tran1">
@@ -85,7 +85,7 @@
   <parent link="x_axis_link"/>
   <child link="y_axis_link"/>
   <origin xyz="0 0 0.01" />
-  <dynamics damping="1.0"/>
+  <dynamics damping="10.0"/>
 </joint>
 
 <transmission name="person_tran2">
@@ -134,12 +134,5 @@
     <child link="person"/>
     <origin xyz="0 0 0.025" />
   </joint>
-
-  <gazebo>
-    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>/person</robotNamespace>
-      <robotParam>/person_description</robotParam>
-    </plugin>
-  </gazebo>
 
 </robot>

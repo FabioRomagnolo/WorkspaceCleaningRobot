@@ -17,7 +17,8 @@
   <link name="person">
     <visual>
       <geometry>
-        <mesh filename="/usr/share/gazebo-11/media/models/stand.dae" scale="0.5 0.5 0.5"/>
+        <!-- <mesh filename="/usr/share/gazebo-11/media/models/stand.dae" scale="0.5 0.5 0.5"/> -->
+        <mesh filename="package://my_package/meshes/stand.dae" scale="0.5 0.5 0.5"/>
       </geometry>
       <origin xyz="0 0 ${person_height/2}" rpy="0 0 0"/>
     </visual>

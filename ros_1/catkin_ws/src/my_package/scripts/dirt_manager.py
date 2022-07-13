@@ -10,7 +10,7 @@ import random
 import tf
 
 '''
-rossrv info gazebo_msgs/SpawnModel
+$ rossrv info gazebo_msgs/SpawnModel
 string model_name
 string model_xml
 string robot_namespace

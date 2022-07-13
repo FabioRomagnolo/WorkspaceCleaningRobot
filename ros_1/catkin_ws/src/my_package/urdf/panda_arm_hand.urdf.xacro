@@ -14,4 +14,6 @@
     <xacro:include filename="$(find my_package)/urdf/panda.control.xacro"/>
     <xacro:panda_control arm_id="panda"/>
   <!-- </xacro:if> -->
+
+  <!-- <xacro:include filename="$(find my_package)/urdf/person_new_2.xacro"/> -->
 </robot>
