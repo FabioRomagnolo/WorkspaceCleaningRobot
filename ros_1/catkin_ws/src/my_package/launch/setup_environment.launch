@@ -2,6 +2,18 @@
 <launch>
     <!-- Camera -->
   <param name="camera_description" command="xacro $(find my_package)/urdf/camera.xacro" />
+
+  <node name="camera_joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <remap from="joint_states" to="camera/joint_states" />
+    <remap from="robot_description" to="camera_description" />
+  </node>
+
+  <node name="camera_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen">
+    <remap from="joint_states" to="camera/joint_states" />
+    <remap from="robot_description" to="camera_description" />
+  </node>
+
   <!-- Table -->
   <param name="table_description" command="xacro $(find my_package)/urdf/table.xacro" />
 
