@@ -8,8 +8,9 @@ import cv2 as cv
 import PIL
 
 import time
-import torch
 from torchvision.transforms.functional import to_pil_image, to_tensor
+
+from utils import image2array, image_file_to_tensor
 
 # Topic from which take the caemera raw images
 RAW_TOPIC = '/image_raw'
@@ -34,25 +35,6 @@ model = BackgroundMatting(backbone=BACKBONE, input_resolution='nhd')
 os.chdir('BackgroundMatting')
 print("Current working directory: ", os.getcwd())
 from BackgroundMatting.utils.model_utils import get_dummy_inputs
-
-def image_file_to_tensor(path_to_file, precision=torch.float32, device='cpu'):
-    # Read the image
-    image = cv.imread(path_to_file)
-    image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
-    # Define a transform to convert the image to tensor
-    tensor = to_tensor(image).unsqueeze(0)
-    # Convert the image to PyTorch tensor according to requirements
-    return tensor.to(precision).to(device)
-
-def image2array(image):
-	"""
-	Method to convert image message to Numpy RGB array.
-	"""
-	image_data = list(image.data)
-	image_array = np.array(image_data).astype('uint8')
-	bgr_image = image_array.reshape(image.height, image.width, 3)
-	rgb_image = cv.cvtColor(bgr_image, cv.COLOR_BGR2RGB)
-	return rgb_image
 
 	
 def callback(image):
