@@ -68,7 +68,7 @@ def callback(image):
 		# Reading and publishing matted image
 		print("----- PUBLISHING MATTED IMAGE -----")
 		path_to_matted = os.path.join(OUTPUTS_DIR, 'image_raw_matted.png')
-		matted_cv = cv.imread(path_to_matted)
+		matted_cv = cv.imread(path_to_matted, flags=cv.IMREAD_UNCHANGED)
 		
 		msg = bridge.cv2_to_imgmsg(matted_cv, encoding="passthrough")
 		pub.publish(msg)
