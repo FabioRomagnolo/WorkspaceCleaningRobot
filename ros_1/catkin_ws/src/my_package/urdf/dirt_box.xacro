@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<robot name="dirt_box" xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:arg name="dirt_box_name" default="dirt_box" />
+    <xacro:arg name="dirt_box_size_xyz" default="0.1 0.1 0.1" />
+    <xacro:arg name="dirt_box_xyz" default="1 1 1" />
+
+    <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </xacro:macro>
+
+<link name="world" />
+<link name="$(arg dirt_box_name)">
+    <visual>
+      <geometry>
+        <box size="$(arg dirt_box_size_xyz)"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <!-- <material name="white"/> -->
+    </visual>
+    <collision>
+      <geometry>
+        <box size="$(arg dirt_box_size_xyz)"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+    <xacro:default_inertial mass="10"/>
+  </link>
+
+  <joint name="world_to_$(arg dirt_box_name)" type="fixed">
+    <parent link="world"/>
+    <child link="$(arg dirt_box_name)"/>
+    <origin xyz="$(arg dirt_box_xyz)" />
+  </joint>
+
+  <gazebo reference="$(arg dirt_box_name)">
+    <material>Gazebo/Grey</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+</gazebo>
+
+
+</robot>
