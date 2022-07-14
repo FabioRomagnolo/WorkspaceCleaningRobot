@@ -44,14 +44,16 @@ def callback(image):
 	# Converting image message to Numpy RGB array
 	rgb_array = image2array(image)
 	# Saving image in outputs folder
-	PIL.Image.fromarray(rgb_array).save(os.path.join(OUTPUTS_DIR, 'image_raw.png'))
+	path_to_image_raw = os.path.join(OUTPUTS_DIR, 'image_raw.png')
+	PIL.Image.fromarray(rgb_array).save(path_to_image_raw)
 
 	# Getting inputs
 	# Get the background image from another publisher or from a directory
 	bgr = image_file_to_tensor(os.path.join(TEST_IMAGES_DIR, "background.png"))
-	# The following inputs are ONLY FOR BACKGROUND MATTING TESTING!
-	# src, bgr = get_dummy_inputs(resolution='nhd')
-	src = image_file_to_tensor(os.path.join(TEST_IMAGES_DIR, 'dirty_0.png'))
+	# The following input is ONLY FOR BACKGROUND MATTING TESTING!
+	# src = image_file_to_tensor(os.path.join(TEST_IMAGES_DIR, 'dirty_0.png'))
+	# The followin input is for PRODUCTION USE
+	src = image_file_to_tensor(path_to_image_raw)
 	
 	# Inference
 	print("- Starting the background matting ...")
@@ -68,8 +70,12 @@ def callback(image):
 		# Reading and publishing matted image
 		print("----- PUBLISHING MATTED IMAGE -----")
 		path_to_matted = os.path.join(OUTPUTS_DIR, 'image_raw_matted.png')
-		matted_cv = cv.imread(path_to_matted)
+		matted_cv = cv.imread(path_to_matted, flags=cv.IMREAD_UNCHANGED)
 		
+		# cv.imshow('RGBA image to publish', matted_cv)
+		# cv.waitKey(0) 
+		# cv.destroyAllWindows()
+
 		msg = bridge.cv2_to_imgmsg(matted_cv, encoding="passthrough")
 		pub.publish(msg)
 		print("Matted image published successfully on ", MATTED_TOPIC)
