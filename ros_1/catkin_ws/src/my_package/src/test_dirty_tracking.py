@@ -18,7 +18,7 @@ MATTED_TOPIC = '/image_raw_matted'
 
 # Topic on which publish dirty coordinates
 DIRTY2D_TOPIC = '/dirty2d'
-DIRTY3D_IMG2CAMERA_TOPIC = '/dirty3d'
+DIRTY3D_IMG2CAMERA_TOPIC = '/dirty2camera'
 pub_dirty2d = rospy.Publisher(DIRTY2D_TOPIC, UInt32MultiArray, queue_size=10)
 pub_dirty3d_img2camera = rospy.Publisher(DIRTY3D_IMG2CAMERA_TOPIC, Float32MultiArray, queue_size=10)
 
@@ -33,8 +33,10 @@ def callback(image):
 	bgra_cv = bridge.imgmsg_to_cv2(image, desired_encoding='passthrough')
 	
 	alpha = bgra_cv[:,:,-1]
-	# 2D coordinates where we need to clean up
+	# 2D coordinates where we need to clean up. 
+	# The array has shape (h, w) while we need x, y coordinates,so we have to swap axes
 	dirty_2d = np.argwhere((alpha != 0)).astype('int32')
+	dirty_2d[:, [1, 0]] = dirty_2d[:, [0, 1]]
 	print(f"2D Coordinates of the dirty in the matted image {dirty_2d.shape}:\n{dirty_2d}")
 	
 	# Getting camera info
