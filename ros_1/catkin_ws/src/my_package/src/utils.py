@@ -42,7 +42,6 @@ def transform_pixels2camera(pixels, camera_info, distance):
     #############################################################
     # Method to transform 2D image pixels into 3D w.r.t. camera #
     #############################################################
-    # Code inspired by: https://math.stackexchange.com/questions/4382437/back-projecting-a-2d-pixel-from-an-image-to-its-corresponding-3d-point
     
     @param pixels: Numpy array of 2D pixels of shape (n, 2)
     @param camera_info: Object of the class CameraInfo containing the camera parameters.
@@ -60,7 +59,9 @@ def transform_pixels2camera(pixels, camera_info, distance):
     homo_pixels = np.append(pixels, np.ones([pixels.shape[0], 1]), axis=1).astype(np.float32)
     output = []
     for p in homo_pixels:
+        
         """
+        ### Approach inspired by: https://math.stackexchange.com/questions/4382437/back-projecting-a-2d-pixel-from-an-image-to-its-corresponding-3d-point
         # Transform pixel in Camera coordinate frame
         pc = np.linalg.inv(K) @ p 
         # Transform pixel in World coordinate frame
@@ -74,17 +75,15 @@ def transform_pixels2camera(pixels, camera_info, distance):
         # Point scaled along this ray
         p3D = cam_world + distance * unit_vector
         """
-        #  WARNING! 
-        #  Distance from camera is expressed in meters, while focal lenghts are expressed in millimeters
-        # new_x, new_y, new_z = p[0] * f[0] / (distance * 1000), p[1] * f[1] / (distance * 1000), distance
-        # p3D = [new_x, new_y, new_z]
 
-        # Another approach:
-        projected_2d = K @ p
-        p3D = np.concatenate([projected_2d, distance], axis=1).astype(np.float32)
+        ### Simpler and more accurate approach: Deproject the pixels into 3D points in the camera frame
+        ### using the camera matrix and multiply z by depth
+        # Inspired by: https://stackoverflow.com/questions/50596347/measure-real-size-of-object-with-calibrated-camera-opencv-c
+        pc = np.linalg.inv(K) @ p 
+        pc[2] = pc[2] * distance
+        p3D = pc
         
-        
-        output.append(p3D)
+        output.append(p3D.tolist())
     output = np.array(output, dtype=np.float32)
 
     return output
