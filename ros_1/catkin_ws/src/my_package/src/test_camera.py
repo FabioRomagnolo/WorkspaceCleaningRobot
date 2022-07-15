@@ -85,7 +85,7 @@ def callback(image):
 
 	print("----------------------------------------------------------------")
 	# Waiting for inputs
-	input("> Press any key to keep on listening and publishing ...")
+	input("> Press enter to keep on listening and publishing ...")
 
 def listener():
 	# In ROS, nodes are uniquely named. If two nodes with the same
@@ -103,5 +103,6 @@ if __name__ == '__main__':
 	# Preparing outputs directory
 	if not os.path.exists(OUTPUTS_DIR):
 		os.mkdir(OUTPUTS_DIR)
+	print(f"- Starting listening to {RAW_TOPIC} ...")
 	# Listening to raw images
 	listener()
