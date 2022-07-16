@@ -4,6 +4,10 @@ import numpy as np
 import torch
 from torchvision.transforms.functional import to_pil_image, to_tensor
 
+import rospy
+import tf
+from geometry_msgs.msg import PointStamped
+
 
 def image_file_to_tensor(path_to_file, precision=torch.float32, device='cpu'):
     # Read the image
@@ -37,7 +41,7 @@ def image2array(image, image_type='rgb'):
     return output
 
 
-def transform_pixels2camera(pixels, camera_info, distance):
+def transform_pixels2camera(pixels, camera_info, depth):
     """
     #############################################################
     # Method to transform 2D image pixels into 3D w.r.t. camera #
@@ -52,7 +56,8 @@ def transform_pixels2camera(pixels, camera_info, distance):
     K = np.array(camera_info.K, dtype=np.float32).reshape((3, 3))			# Intrinsic camera matrix
     R = np.array(camera_info.R, dtype=np.float32).reshape((3, 3))		    # Rotation matrix
     P = np.array(camera_info.P, dtype=np.float32).reshape((3, 4))			# Projection camera matrix
-    f =  np.array([K[0][0], K[1][1]], dtype=np.float32)			            # Focal lenght [fx, fy]
+    f = (K[0][0], K[1][1])  		                                        # Focal lenght [fx, fy]
+    c = (K[0][2], K[1][2])                                                  # Principal point [cx, cy]
     t = np.array([P[0][3], P[1][3], P[2][3]], dtype=np.float32)	    		# Translation [tx, ty, tz]
 
     # Homogeneous pixel coordinates
@@ -74,16 +79,40 @@ def transform_pixels2camera(pixels, camera_info, distance):
         unit_vector = vector / np.linalg.norm(vector)
         # Point scaled along this ray
         p3D = cam_world + distance * unit_vector
+        output.append(p3D.tolist())
         """
 
-        ### Simpler and more accurate approach: Deproject the pixels into 3D points in the camera frame
-        ### using the camera matrix and multiply z by depth
-        # Inspired by: https://stackoverflow.com/questions/50596347/measure-real-size-of-object-with-calibrated-camera-opencv-c
-        pc = np.linalg.inv(K) @ p 
-        pc[2] = pc[2] * distance
-        p3D = pc
-        
-        output.append(p3D.tolist())
+        ### Simpler and more accurate approach, knowing the exact depth
+        # Inspired by https://github.com/IntelRealSense/librealsense/wiki/Projection-in-RealSense-SDK-2.0
+        X = (p[0] - c[0])/f[0] * depth
+        Y = (p[1] - c[1])/f[1] * depth
+        p3D = [X, Y, depth]
+        output.append(p3D)
+
     output = np.array(output, dtype=np.float32)
 
+    return output
+
+
+def transform_points(points, ref_frame, init_frame):
+    # WARNING! rospy.init_node() must be called before this function!
+
+    tf_listener = tf.TransformListener()
+    tf_camera2world = tf_listener.waitForTransform('world', 'camera_link', rospy.Time(0), rospy.Duration(5))
+
+    transformed = []
+    for p in points:
+        point = PointStamped()
+        point.header.frame_id = 'camera_link'
+        point.header.stamp = rospy.Time()
+
+        point.point.x = p[0]
+        point.point.y = p[1]
+        point.point.z = p[2]
+
+        tp = tf_listener.transformPoint('world', point).point
+
+        transformed.append([tp.x, tp.y, tp.z])
+
+    output = np.array(transformed, dtype=np.float32)
     return output

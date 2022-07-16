@@ -52,7 +52,7 @@ def callback(image):
 	bgr = image_file_to_tensor(os.path.join(TEST_IMAGES_DIR, "background.png"))
 	# The following input is ONLY FOR BACKGROUND MATTING TESTING!
 	# src = image_file_to_tensor(os.path.join(TEST_IMAGES_DIR, 'dirty_0.png'))
-	# The followin input is for PRODUCTION USE
+	# The following input is for PRODUCTION USE
 	src = image_file_to_tensor(path_to_image_raw)
 	
 	# Inference
