@@ -39,7 +39,9 @@ def callback(image):
 	bgra_cv = bridge.imgmsg_to_cv2(image, desired_encoding='passthrough')
 	
 	alpha = bgra_cv[:,:,-1]
-	cv.imwrite(os.path.join(OUTPUTS_DIR, 'alpha_image_raw_matted.jpg'), alpha)
+	path_to_alpha = os.path.join(OUTPUTS_DIR, 'alpha_image_raw_matted.jpg')
+	print("- Saving alpha channel of matted image to ", path_to_alpha)
+	cv.imwrite(path_to_alpha, alpha)
 
 	# 2D coordinates where we need to clean up. 
 	# The array has shape (h, w) while we need x, y coordinates,so we have to swap axes
