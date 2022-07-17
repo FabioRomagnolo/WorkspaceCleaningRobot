@@ -7,6 +7,7 @@ from torchvision.transforms.functional import to_pil_image, to_tensor
 import rospy
 import tf
 from geometry_msgs.msg import PointStamped
+from std_msgs.msg import UInt32MultiArray, Float32MultiArray, MultiArrayDimension
 
 
 def image_file_to_tensor(path_to_file, precision=torch.float32, device='cpu'):
@@ -116,3 +117,29 @@ def transform_points(points, ref_frame, init_frame):
 
     output = np.array(transformed, dtype=np.float32)
     return output
+
+
+def publish_numpy_array(array, publisher):
+    assert array.dtype.name in ['float32', 'int32']
+
+    if array.dtype.name == 'float32':
+        msg = Float32MultiArray()
+    else:
+        msg = UInt32MultiArray()
+    
+    msg.layout.dim = []
+    dims = np.array(array.shape)
+
+    array_size = dims.prod()/float(array.nbytes) # normalizing the strides size depending on .nbytes
+
+    for i in range(0,len(dims)): #should be rather fast. 
+        # gets the num. of dims of nparray to construct the message   
+        msg.layout.dim.append(MultiArrayDimension())
+        msg.layout.dim[i].size = int(dims[i])
+        msg.layout.dim[i].stride = int(dims[i:].prod()/array_size)
+        msg.layout.dim[i].label = 'dim_%d'%i
+
+    msg.data = np.frombuffer(array.tobytes(), array.dtype) ## serializes
+
+    # Publishing message
+    publisher.publish(msg)

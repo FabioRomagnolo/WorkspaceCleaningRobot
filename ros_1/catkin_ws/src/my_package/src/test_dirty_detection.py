@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import rospy
 from sensor_msgs.msg import Image, CameraInfo
-from std_msgs.msg import UInt32MultiArray, Float32MultiArray
 import tf2_ros
 import tf
 
@@ -10,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2 as cv
 
-from utils import transform_pixels2camera, transform_points
+from utils import transform_pixels2camera, transform_points, publish_numpy_array
 
 # OpenCV bridge for image messages
 from cv_bridge import CvBridge
@@ -84,21 +83,15 @@ def callback(image):
 		print("----- PUBLISHING DIRTY COORDINATES -----")	
 		
 		# Publishing 2D coordinates
-		msg = UInt32MultiArray()
-		msg.data = dirty_2d.tolist()
-		pub_dirty2d.publish(msg)
+		publish_numpy_array(dirty_2d, pub_dirty2d)
 		print("Dirty 2D coordinates published successfully on ", DIRTY2D_TOPIC)
 
 		# Publishing 3D coordinates w.r.t. camera
-		msg = Float32MultiArray()
-		msg.data = dirty2camera.tolist()
-		pub_dirty3d_img2camera.publish(msg)
+		publish_numpy_array(dirty2camera, pub_dirty3d_img2camera)
 		print("Dirty 3D coordinates w.r.t. camera frame successfully published on ", DIRTY3D_IMG2CAMERA_TOPIC)
 
 		# Publishing 3D coordinates w.r.t. world
-		msg = Float32MultiArray()
-		msg.data = dirty2world.tolist()
-		pub_dirty3d_img2world.publish(msg)
+		publish_numpy_array(dirty2world, pub_dirty3d_img2world)
 		print("Dirty 3D coordinates w.r.t. camera frame successfully published on ", DIRTY3D_IMG2WORLD_TOPIC)
 
 
