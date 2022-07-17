@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from sensor_msgs.msg import Image, CameraInfo
+from std_msgs.msg import UInt32MultiArray, Float32MultiArray
 import tf2_ros
 import tf
 
@@ -50,7 +51,7 @@ def callback(image):
 	
 	# Getting camera info
 	camera_info = rospy.wait_for_message('/camera_info', CameraInfo)
-	depth = 1.55 - 0.1  # Distance of camera from table: height(camera) - height(table)
+	depth = 1.55 - 0.4  # Distance of camera from table: height(camera) - height(table)
 
 	# Transforming 2D dirty pixels to 3D coordinates w.r.t. camera
 	dirty2camera = transform_pixels2camera(pixels=dirty_2d, camera_info=camera_info, depth=depth)
@@ -65,13 +66,13 @@ def callback(image):
 
 		# Getting camera w.r.t. world as TransformStamped.transform
 		tf2_camera2world =  tf2_buffer.lookup_transform(
-			'camera_link', 'world', time=rospy.Time(0), timeout=rospy.Duration(10)).transform
+			'camera_link_optical', 'world', time=rospy.Time(0), timeout=rospy.Duration(10)).transform
 
 		print("- Getting transformation of camera frame w.r.t. world...\n", tf2_camera2world)
 		translation, quaternions = tf2_camera2world.translation, tf2_camera2world.rotation
 
 		# Transforming 3D coordinates w.r.t. world: tf implementation
-		dirty2world = transform_points(points=dirty2camera, ref_frame='world', init_frame='camera_link')
+		dirty2world = transform_points(points=dirty2camera, ref_frame='world', init_frame='camera_link_optical')
 		print(f"3D coordinates of pixels w.r.t. world frame ({dirty2world.shape}):\n", dirty2world)
 
 	except Exception as e:
