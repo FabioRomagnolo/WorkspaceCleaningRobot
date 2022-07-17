@@ -72,7 +72,7 @@ def callback(image):
 		translation, quaternions = tf2_camera2world.translation, tf2_camera2world.rotation
 
 		# Transforming 3D coordinates w.r.t. world: tf implementation
-		dirty2world = transform_points(points=dirty2camera, ref_frame='world', init_frame='camera_link_optical')
+		dirty2world = transform_points(points=dirty2camera, target_frame='camera_link_optical', source_frame='world')
 		print(f"3D coordinates of pixels w.r.t. world frame ({dirty2world.shape}):\n", dirty2world)
 
 	except Exception as e:

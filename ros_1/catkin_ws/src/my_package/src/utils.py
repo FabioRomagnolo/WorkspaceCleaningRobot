@@ -95,23 +95,23 @@ def transform_pixels2camera(pixels, camera_info, depth):
     return output
 
 
-def transform_points(points, ref_frame, init_frame):
+def transform_points(points, target_frame, source_frame):
     # WARNING! rospy.init_node() must be called before this function!
 
     tf_listener = tf.TransformListener()
-    tf_camera2world = tf_listener.waitForTransform('world', 'camera_link', rospy.Time(0), rospy.Duration(10))
+    tf_camera2world = tf_listener.waitForTransform(target_frame, source_frame, rospy.Time(0), rospy.Duration(10))
 
     transformed = []
     for p in points:
         point = PointStamped()
-        point.header.frame_id = 'camera_link'
+        point.header.frame_id = source_frame
         point.header.stamp = rospy.Time()
 
         point.point.x = p[0]
         point.point.y = p[1]
         point.point.z = p[2]
 
-        tp = tf_listener.transformPoint('world', point).point
+        tp = tf_listener.transformPoint(target_frame, point).point
 
         transformed.append([tp.x, tp.y, tp.z])
 
