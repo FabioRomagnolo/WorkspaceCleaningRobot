@@ -66,7 +66,7 @@ def callback(image):
 
 		# Getting camera w.r.t. world as TransformStamped.transform
 		tf2_camera2world =  tf2_buffer.lookup_transform(
-			'camera_link', 'world', time=rospy.Time(0), timeout=rospy.Duration(2)).transform
+			'camera_link', 'world', time=rospy.Time(0), timeout=rospy.Duration(10)).transform
 
 		print("- Getting transformation of camera frame w.r.t. world...\n", tf2_camera2world)
 		translation, quaternions = tf2_camera2world.translation, tf2_camera2world.rotation

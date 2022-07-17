@@ -50,7 +50,7 @@ def transform_pixels2camera(pixels, camera_info, depth):
     @param pixels: Numpy array of 2D pixels of shape (n, 2)
     @param camera_info: Object of the class CameraInfo containing the camera parameters.
                         Ros documentation: http://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/CameraInfo.html
-    @param distance: Distance of camera from pixels in meters (e.g. a table)
+    @param depth: Distance of camera from pixels in meters (e.g. a table)
     """
     # Camera params
     K = np.array(camera_info.K, dtype=np.float32).reshape((3, 3))			# Intrinsic camera matrix
@@ -98,7 +98,7 @@ def transform_points(points, ref_frame, init_frame):
     # WARNING! rospy.init_node() must be called before this function!
 
     tf_listener = tf.TransformListener()
-    tf_camera2world = tf_listener.waitForTransform('world', 'camera_link', rospy.Time(0), rospy.Duration(5))
+    tf_camera2world = tf_listener.waitForTransform('world', 'camera_link', rospy.Time(0), rospy.Duration(10))
 
     transformed = []
     for p in points:
