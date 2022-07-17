@@ -13,7 +13,7 @@
     </inertial>
   </xacro:macro>
 
-    <link name="world" />
+    <!-- <link name="world" /> -->
   <link name="person">
     <visual>
       <geometry>
@@ -39,12 +39,12 @@
     <xacro:default_inertial mass="70"/>
   </link>
 
-  <joint name="world_to_person" type="prismatic">
+  <!-- <joint name="world_to_person" type="prismatic">
     <axis xyz="1 0 0"/>
     <limit lower="-3" upper="2" velocity="100" effort="100"/> 
     <parent link="world"/>
     <child link="person"/>
     <origin xyz="${xyz}" />
-  </joint>
+  </joint> -->
 
 </robot>

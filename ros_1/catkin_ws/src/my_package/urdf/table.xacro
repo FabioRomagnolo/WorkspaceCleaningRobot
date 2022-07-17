@@ -2,7 +2,7 @@
 <robot name="table" xmlns:xacro="http://ros.org/wiki/xacro">
 
     <!-- o_x is the position of the table of the table along x axis -->
-    <xacro:property name="o_x" value="0.5" />
+    <xacro:property name="o_x" value="0.1" />
     <!-- o_y is the position of the table of the table along y axis -->
     <xacro:property name="o_y" value="-0.7" />
     <xacro:property name="table_height" value="0.1" />

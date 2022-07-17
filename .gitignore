@@ -22,3 +22,4 @@ ros_1/catkin_ws/src/my_package/src/BackgroundMatting/__pycache__
 ros_1/catkin_ws/src/my_package/src/__pycache__
 ros_1/catkin_ws/src/my_package/pytorch_saves/
 
+ros_1/catkin_ws/.env

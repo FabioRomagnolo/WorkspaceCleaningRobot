@@ -8,7 +8,7 @@
     <joint name="robot_to_world" type="fixed">
     <parent link="world" />
     <child link="${arm_id}_link0" />
-    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <origin xyz="0.0 0.0 0.4" rpy="0.0 0.0 0.0" />
     <dynamics damping="${joint_damping}"/>
   </joint>
     </xacro:unless>

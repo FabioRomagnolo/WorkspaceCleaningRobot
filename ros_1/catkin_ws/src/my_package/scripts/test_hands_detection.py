@@ -11,12 +11,14 @@ import matplotlib.pyplot as plt
 from torchvision import transforms
 import time
 import sys
+from cv_bridge import CvBridge
 
 class HandsDetectionNode:
     def __init__(self):
         self.package_name = 'my_package'
         self.r = rospkg.RosPack()
         self.saves_dir = os.path.join(self.r.get_path(self.package_name), 'pytorch_saves')
+        #self.saves_dir = '/home/user/WorkspaceCleaningRobot/ros_1/catkin_ws/src/my_package/pytorch_saves'
         self.model = torchvision.models.detection.fasterrcnn_mobilenet_v3_large_fpn(
             num_classes=2)
         self.model.load_state_dict(torch.load(os.path.join(
@@ -28,6 +30,7 @@ class HandsDetectionNode:
 
         self.wait_time = 4
         self.old_time = time.time()
+        self.bridge = CvBridge()
 
 
     def get_final_boxes(out, score_threshold):
@@ -53,13 +56,17 @@ class HandsDetectionNode:
         rgb_image = cv.cvtColor(bgr_image, cv.COLOR_BGR2RGB)
         return rgb_image
 
-    def image_callback(self, data):
-        rospy.loginfo(rospy.get_caller_id() + "Image received!")
+    def image_callback(self, image_message):
+        rospy.loginfo(rospy.get_caller_id() + " Image received!")
         #print(sys.getsizeof(data))
 
         # Converting image message to Numpy RGB array
-        rgb_array = self.image2array(data)
-        rgb_tensor = transforms.ToTensor()(rgb_array)
+        #rgb_array = self.image2array(data)
+        cv_image_bgr = self.bridge.imgmsg_to_cv2(image_message, desired_encoding='passthrough')
+        cv_image_rgb = cv.cvtColor(cv_image_bgr, cv.COLOR_BGR2RGB)
+        #plt.imshow(cv_image_rgb)
+        #plt.show()
+        rgb_tensor = transforms.ToTensor()(cv_image_rgb)
 
         out = self.model(rgb_tensor.unsqueeze(0))
         print(out)
