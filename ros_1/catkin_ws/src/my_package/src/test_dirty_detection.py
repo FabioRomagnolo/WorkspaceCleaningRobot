@@ -83,18 +83,26 @@ def callback(image):
 		# Reading and publishing dirty coordinates
 		print("----- PUBLISHING DIRTY COORDINATES -----")	
 		
-		# Publishing 2D coordinates
-		publish_numpy_array(dirty_2d, pub_dirty2d)
-		print("Dirty 2D coordinates published successfully on ", DIRTY2D_TOPIC)
+		if np.size(dirty_2d):
+			# Publishing 2D coordinates
+			publish_numpy_array(dirty_2d, pub_dirty2d)
+			print("Dirty 2D coordinates published successfully on ", DIRTY2D_TOPIC)
+		else:
+			print("WARNING: None dirty 2D coordinates to publish.")
 
-		# Publishing 3D coordinates w.r.t. camera
-		publish_numpy_array(dirty2camera, pub_dirty3d_img2camera)
-		print("Dirty 3D coordinates w.r.t. camera frame successfully published on ", DIRTY3D_IMG2CAMERA_TOPIC)
+		if np.size(dirty2camera):
+			# Publishing 3D coordinates w.r.t. camera
+			publish_numpy_array(dirty2camera, pub_dirty3d_img2camera)
+			print("Dirty 3D coordinates w.r.t. camera frame successfully published on ", DIRTY3D_IMG2CAMERA_TOPIC)
+		else:
+			print("WARNING! None dirty 3D coordinates w.r.t. camera to publish.")
 
-		# Publishing 3D coordinates w.r.t. world
-		publish_numpy_array(dirty2world, pub_dirty3d_img2world)
-		print("Dirty 3D coordinates w.r.t. camera frame successfully published on ", DIRTY3D_IMG2WORLD_TOPIC)
-
+		if np.size(dirty2world):
+			# Publishing 3D coordinates w.r.t. world
+			publish_numpy_array(dirty2world, pub_dirty3d_img2world)
+			print("Dirty 3D coordinates w.r.t. world frame successfully published on ", DIRTY3D_IMG2WORLD_TOPIC)
+		else:
+			print("WARNING! None dirty 3D coordinates w.r.t. world to publish.")
 
 		print("-----------------------------------")
 	except Exception as e:
