@@ -66,6 +66,9 @@ class MoveToClean:
             waypoints, 0.01, 0.0  # waypoints to follow  # eef_step
         )  # jump_threshold
 
+        print('Fraction: ', fraction)
+        #print('Trajectory: ', plan)
+
         self.move_group.execute(plan, wait=True)
 
         # Returning to home configuration of the joints
