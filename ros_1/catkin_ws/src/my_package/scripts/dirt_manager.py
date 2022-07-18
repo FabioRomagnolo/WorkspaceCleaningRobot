@@ -50,8 +50,8 @@ class DirtManager:
             try:
                 spawn_model = rospy.ServiceProxy('/gazebo/spawn_urdf_model', SpawnModel)
                 model_name = f'test_dirt_{self.current_box}'
-                box_x = random.uniform(0.5, 1)
-                box_y = random.uniform(-0.5, 0.5)
+                box_x = random.uniform(0.15, 0.85)
+                box_y = random.uniform(-0.65, 0.65)
                 box_z = 0.45
                 mappings = {
                     'dirt_box_name': f'dirt_box_{self.current_box}',

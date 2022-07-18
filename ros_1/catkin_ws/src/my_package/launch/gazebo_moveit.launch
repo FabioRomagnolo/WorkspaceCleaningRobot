@@ -2,8 +2,10 @@
 <launch>
   <arg name="paused" default="false"/>
   <arg name="gazebo_gui" default="true"/>
-  <arg name="initial_joint_positions" doc="Initial joint configuration of the robot"
-       default=" -J panda_joint1 0 -J panda_joint2 0 -J panda_joint3 0 -J panda_joint4 -0.4945 -J panda_joint5 -0.048 -J panda_joint6 0.5657 -J panda_joint7 -0.3041"/>
+  <!-- <arg name="initial_joint_positions" doc="Initial joint configuration of the robot"
+       default=" -J panda_joint1 0 -J panda_joint2 0 -J panda_joint3 0 -J panda_joint4 -0.4945 -J panda_joint5 -0.048 -J panda_joint6 0.5657 -J panda_joint7 -0.3041"/> -->
+       <arg name="initial_joint_positions" doc="Initial joint configuration of the robot"
+       default=" -J panda_joint1 0 -J panda_joint2 0.0705 -J panda_joint3 0 -J panda_joint4 -0.3532 -J panda_joint5 0 -J panda_joint6 0.4349 -J panda_joint7 0"/>
 
   <!-- startup simulated world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -19,7 +21,9 @@
   <arg name="unpause" value="$(eval '' if arg('paused') else '-unpause')" />
   <!-- push robot_description to factory and spawn robot in gazebo at the origin, change x,y,z arguments to spawn in a different position -->
   <arg name="world_pose" value="-x 0 -y 0 -z 0" />
-  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot $(arg unpause) $(arg world_pose) $(arg initial_joint_positions)"
+  <!-- <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot $(arg unpause) $(arg world_pose) $(arg initial_joint_positions)"
+    respawn="false" output="screen" /> -->
+    <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -unpause $(arg world_pose) $(arg initial_joint_positions)"
     respawn="false" output="screen" />
 
   <!-- Load joint controller parameters for Gazebo -->

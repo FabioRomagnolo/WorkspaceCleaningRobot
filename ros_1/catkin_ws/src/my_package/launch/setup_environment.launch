@@ -29,8 +29,8 @@
     <!-- Person -->
   <param name="person_description" command="xacro $(find my_package)/urdf/person_new.xacro" />
 
-  <node name="spawn_person_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param person_description -model person $(arg world_pose)"
-    respawn="false" output="screen" />
+  <!-- <node name="spawn_person_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param person_description -model person $(arg world_pose)"
+    respawn="false" output="screen" /> -->
 
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
       <remap from="joint_states" to="person/joint_states" />
