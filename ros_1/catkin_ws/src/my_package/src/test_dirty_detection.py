@@ -48,6 +48,15 @@ def callback(image):
 	dirty_2d = np.argwhere((alpha != 0)).astype('int32')
 	dirty_2d[:, [1, 0]] = dirty_2d[:, [0, 1]]
 	print(f"2D Coordinates of the dirty in the matted image {dirty_2d.shape}:\n{dirty_2d}")
+
+	# Visualize the target points in the image
+	image_message = rospy.wait_for_message('/image_raw', Image)
+	cv_image_bgr = bridge.imgmsg_to_cv2(image_message, desired_encoding='passthrough')
+	cv_image_rgb = cv.cvtColor(cv_image_bgr, cv.COLOR_BGR2RGB)
+	for p in dirty_2d:
+		cv.circle(cv_image_rgb, (p[0], p[1]), 2, (0, 0, 255), 2)
+	plt.imshow(cv_image_rgb)
+	plt.show()
 	
 	# Getting camera info
 	camera_info = rospy.wait_for_message('/camera_info', CameraInfo)
