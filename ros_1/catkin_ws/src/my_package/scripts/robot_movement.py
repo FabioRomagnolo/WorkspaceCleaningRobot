@@ -44,27 +44,27 @@ class MoveToClean:
         points = np.array(msg.data).reshape(-1, 3)
 
         waypoints = []
-        
-        for p in points:
-            print('Current point: ', p)
+        waypoints.append(self.move_group.get_current_pose().pose)
+        for i, p in enumerate(points):
+            print(f'{i}. Current point: {p}')
             # Moving robot end effector to the 3D point
             pose_goal = Pose()
             pose_goal.orientation = Quaternion(*tf.transformations.quaternion_from_euler(0.0, np.pi, 0.0))
+
             pose_goal.position.x = p[0]
             pose_goal.position.y = p[1]
-            # pose_goal.position.z = p[2]+0.3
-            pose_goal.position.z = p[2]
+            pose_goal.position.z = p[2]+0.23
 
             waypoints.append(pose_goal)
 
-        print("- Planning task ...")
+        '''
         # We want the Cartesian path to be interpolated at a resolution of 1 cm
         # which is why we will specify 0.01 as the eef_step in Cartesian
         # translation.  We will disable the jump threshold by setting it to 0.0,
         # ignoring the check for infeasible jumps in joint space, which is sufficient
         # for this tutorial.
         # eef_step = 0.01
-        eef_step = 0.001
+        eef_step = 0.01
         plan, fraction = self.move_group.compute_cartesian_path(
             waypoints, eef_step, 0.0  # waypoints to follow  # eef_step  # jump_threshold
         )  
@@ -78,11 +78,29 @@ class MoveToClean:
         # Returning to home configuration of the joints
         print("- Returning to home configuration ...")
         self.return_to_home_conf()
+        '''
+        
+        pose_targets = waypoints
+        for i, goal in enumerate(pose_targets):
+            if i == 0:
+                continue
 
+            print(f"- Planning moving to pose {i} from pose {i-1}...")
+            self.move_group.set_pose_target(goal)
+            ## Now, we call the planner to compute the plan and execute it.
+            print("- Executing task ...")
+            plan = self.move_group.go(wait=True)
+            # Calling `stop()` ensures that there is no residual movement
+            self.move_group.stop()
+        # It is always good to clear your targets after planning with poses.
+        # Note: there is no equivalent function for clear_joint_value_targets()
+        self.move_group.clear_pose_targets()
+        
 
         '''
         self.move_group.set_pose_targets(pose_targets)
 
+        print("- Executing task ...")
         ## Now, we call the planner to compute the plan and execute it.
         plan = self.move_group.go(wait=True)
         # Calling `stop()` ensures that there is no residual movement
