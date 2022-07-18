@@ -55,8 +55,11 @@ def callback(image):
 	cv_image_rgb = cv.cvtColor(cv_image_bgr, cv.COLOR_BGR2RGB)
 	for p in dirty_2d:
 		cv.circle(cv_image_rgb, (p[0], p[1]), 2, (0, 0, 255), 2)
-	plt.imshow(cv_image_rgb)
-	plt.show()
+	# plt.imshow(cv_image_rgb)
+	# plt.show()
+	# Save the target points in the image
+	path_to_targets = os.path.join(OUTPUTS_DIR, 'dirty_targets.jpg')
+	cv.imwrite(path_to_targets, cv_image_rgb)
 	
 	# Getting camera info
 	camera_info = rospy.wait_for_message('/camera_info', CameraInfo)
@@ -64,7 +67,9 @@ def callback(image):
 
 	# Transforming 2D dirty pixels to 3D coordinates w.r.t. camera
 	dirty2camera = transform_pixels2camera(pixels=dirty_2d, camera_info=camera_info, depth=depth)
-	print(f"3D coordinates of pixels w.r.t. camera frame ({dirty2camera.shape}):\n", dirty2camera)
+	# Rounding coordinates and deleting duplicates
+	dirty2camera = np.unique(np.round(dirty2camera, decimals=2), axis=0)
+	print(f"Rounded 3D coordinates of pixels w.r.t. camera frame ({dirty2camera.shape}):\n", dirty2camera)
 
 	# Transforming 3D coordinates w.r.t. world
 	try:
@@ -82,7 +87,9 @@ def callback(image):
 
 		# Transforming 3D coordinates w.r.t. world: tf implementation
 		dirty2world = transform_points(points=dirty2camera, target_frame='world', source_frame='camera_link_optical')
-		print(f"3D coordinates of pixels w.r.t. world frame ({dirty2world.shape}):\n", dirty2world)
+		# Rounding coordinates and deleting duplicates
+		dirty2world = np.unique(np.round(dirty2world, decimals=1), axis=0)
+		print(f"Rounded 3D coordinates of pixels w.r.t. world frame ({dirty2world.shape}):\n", dirty2world)
 
 	except Exception as e:
 		print("WARNING! Can't compute the transformation of dirty w.r.t. world!\n", e)

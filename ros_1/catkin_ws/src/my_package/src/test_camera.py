@@ -36,7 +36,7 @@ os.chdir('BackgroundMatting')
 print("Current working directory: ", os.getcwd())
 from BackgroundMatting.utils.model_utils import get_dummy_inputs
 
-	
+
 def callback(image):
 	print("---------------------------- RAW IMAGE LISTENED! ----------------------------")
 	rospy.loginfo(rospy.get_caller_id() + "I heard the raw image")
@@ -86,7 +86,7 @@ def callback(image):
 	print("----------------------------------------------------------------")
 	# Waiting for inputs
 	input("> Press enter to keep on listening and publishing ...")
-
+	
 def listener():
 	# In ROS, nodes are uniquely named. If two nodes with the same
 	# name are launched, the previous one is kicked off. The
@@ -103,6 +103,7 @@ if __name__ == '__main__':
 	# Preparing outputs directory
 	if not os.path.exists(OUTPUTS_DIR):
 		os.mkdir(OUTPUTS_DIR)
+
 	print(f"- Starting listening to {RAW_TOPIC} ...")
 	# Listening to raw images
 	listener()

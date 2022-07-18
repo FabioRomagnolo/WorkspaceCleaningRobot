@@ -39,7 +39,8 @@ class DirtManager:
         self.r = rospkg.RosPack()
         #package_path = self.r.get_path(self.package_name)
         #self.xacro_file = os.path.join(package_path, 'urdf', 'dirt_box.xacro')
-        self.xacro_file = '/home/user/WorkspaceCleaningRobot/ros_1/catkin_ws/src/my_package/urdf/dirt_box.xacro'
+        # self.xacro_file = '/home/user/WorkspaceCleaningRobot/ros_1/catkin_ws/src/my_package/urdf/dirt_box.xacro'
+        self.xacro_file = os.path.join('..', 'urdf', 'dirt_box.xacro')
         self.num_dirt = 3
         self.current_box = 0
 
