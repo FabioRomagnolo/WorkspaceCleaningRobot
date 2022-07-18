@@ -19,7 +19,6 @@ MATTED_TOPIC = '/image_raw_matted'
 
 OUTPUTS_DIR = os.path.join('..', '..', 'outputs')
 TEST_IMAGES_DIR = 'test_images'
-BACKBONE = 'resnet50'
 
 # Publisher for matted images
 pub = rospy.Publisher(MATTED_TOPIC, Image, queue_size=1000) 
@@ -27,9 +26,9 @@ pub = rospy.Publisher(MATTED_TOPIC, Image, queue_size=1000)
 from cv_bridge import CvBridge
 bridge = CvBridge()
 
-# Initializing BackgroundMatting model
+# Initializing BackgroundMatting model -> Set model params here!
 from background_matting import BackgroundMatting
-model = BackgroundMatting(backbone=BACKBONE, input_resolution='nhd')
+model = BackgroundMatting(backbone='resnet50', refine_mode='full', input_resolution='nhd')
 
 # Entering into Background Matting working directory
 os.chdir('BackgroundMatting')

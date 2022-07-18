@@ -184,12 +184,12 @@ class MattingRefine(MattingBase):
         super().__init__(backbone, inference)
 
         # Setting recommended backbone_scale w.r.t. input's resolution
-        backbone_scale = 1 / 4                  # Recommended for HD
-        refine_sample_pixels = 80_000           # Recommended for HD
-        if input_resolution == 'nhd':
-            backbone_scale = 1 / 3
-            refine_sample_pixels = 40_000
-        elif input_resolution == '4k':
+        backbone_scale = 1 / 4                  # Recommended for HD and NHD
+        refine_sample_pixels = 80_000           # Recommended for HD and NHD
+        # if input_resolution == 'nhd':
+        #     backbone_scale = 1 / 3
+        #     refine_sample_pixels = 80_000
+        if input_resolution == '4k':
             backbone_scale = 1 / 8
             refine_sample_pixels = 320_000
         self.input_resolution = input_resolution

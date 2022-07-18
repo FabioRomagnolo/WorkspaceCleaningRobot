@@ -26,11 +26,13 @@ class BackgroundMatting:
     def __init__(self,
                  backbone='resnet50',
                  model_type='mattingrefine',
+                 refine_mode='sampling',
                  input_resolution='nhd',
                  device=torch.device('cpu')):
         self.model = load_inference_model(
             path_to_model=MODEL_PATHS[backbone],
             model_type=model_type,
+            refine_mode=refine_mode,
             input_resolution=input_resolution,
             device=device,
         )
