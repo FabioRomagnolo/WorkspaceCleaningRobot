@@ -12,6 +12,8 @@ import cv2 as cv
 
 from utils import transform_pixels2camera, transform_points, publish_numpy_array
 
+from sklearn.cluster import MeanShift, estimate_bandwidth
+
 # OpenCV bridge for image messages
 from cv_bridge import CvBridge
 bridge = CvBridge()
@@ -60,6 +62,31 @@ def callback(image):
 	# Save the target points in the image
 	path_to_targets = os.path.join(OUTPUTS_DIR, 'dirty_targets.jpg')
 	cv.imwrite(path_to_targets, cv_image_rgb)
+
+	# Clustering
+	bandwidth = estimate_bandwidth(dirty_2d, quantile=0.2)
+	ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
+	ms.fit(dirty_2d)
+	labels = ms.labels_
+	cluster_centers = ms.cluster_centers_.astype(np.int32)
+	labels_unique = np.unique(labels)
+	n_clusters_ = len(labels_unique)
+
+	print("Number of estimated clusters : %d" % n_clusters_)
+	print('Cluster centers:')
+	print(cluster_centers)
+
+	# Visualize the cluster centers
+	image_message = rospy.wait_for_message('/image_raw', Image)
+	cv_image_bgr = bridge.imgmsg_to_cv2(image_message, desired_encoding='passthrough')
+	cv_image_rgb = cv.cvtColor(cv_image_bgr, cv.COLOR_BGR2RGB)
+	for p in cluster_centers:
+		cv.circle(cv_image_rgb, (p[0], p[1]), 2, (0, 0, 255), 2)
+	#plt.imshow(cv_image_rgb)
+	#plt.show()
+	cv.imwrite(os.path.join(OUTPUTS_DIR, 'dirty_clusters.jpg'), cv_image_rgb)
+	dirty_2d = cluster_centers
+
 	
 	# Getting camera info
 	camera_info = rospy.wait_for_message('/camera_info', CameraInfo)
@@ -88,7 +115,7 @@ def callback(image):
 		# Transforming 3D coordinates w.r.t. world: tf implementation
 		dirty2world = transform_points(points=dirty2camera, target_frame='world', source_frame='camera_link_optical')
 		# Rounding coordinates and deleting duplicates
-		dirty2world = np.unique(np.round(dirty2world, decimals=1), axis=0)
+		dirty2world = np.unique(np.round(dirty2world, decimals=2), axis=0)
 		print(f"Rounded 3D coordinates of pixels w.r.t. world frame ({dirty2world.shape}):\n", dirty2world)
 
 	except Exception as e:

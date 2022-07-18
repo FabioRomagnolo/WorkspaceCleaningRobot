@@ -53,7 +53,8 @@ class MoveToClean:
 
             pose_goal.position.x = p[0]
             pose_goal.position.y = p[1]
-            pose_goal.position.z = p[2]+0.23
+            #pose_goal.position.z = p[2]+0.23
+            pose_goal.position.z = 0.6
 
             waypoints.append(pose_goal)
 
