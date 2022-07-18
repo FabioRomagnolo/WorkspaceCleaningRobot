@@ -36,7 +36,7 @@
   </joint>
 
   <gazebo reference="$(arg dirt_box_name)">
-    <material>Gazebo/Grey</material>
+    <material>Gazebo/Black</material>
     <mu1>0.2</mu1>
     <mu2>0.2</mu2>
 </gazebo>
