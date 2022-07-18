@@ -84,7 +84,31 @@ class MoveToClean:
         for i, goal in enumerate(pose_targets):
             if i == 0:
                 continue
+            if i == 1:
+                print(f"- Planning moving to pose {i} from pose {i-1}...")
+                self.move_group.set_pose_target(goal)
+                plan = self.move_group.go(wait=True)
+                self.move_group.stop()
+                self.move_group.clear_pose_targets()
+                self.move_group.set_start_state(self.move_group.get_current_state())
+                continue
 
+            # move_points = [
+            #     self.move_group.get_current_pose().pose,
+            #     waypoints[i]
+            # ]
+            print(f"- Planning moving to pose {i} from pose {i-1}...")
+
+            plan, fraction = self.move_group.compute_cartesian_path(
+                [waypoints[i]], 0.01, 0.0  # waypoints to follow  # eef_step  # jump_threshold
+            )
+            print('Fraction: ', fraction)
+
+            self.move_group.execute(plan, wait=True)
+            self.move_group.stop()
+            self.move_group.set_start_state(self.move_group.get_current_state())
+            
+            '''
             print(f"- Planning moving to pose {i} from pose {i-1}...")
             self.move_group.set_pose_target(goal)
             ## Now, we call the planner to compute the plan and execute it.
@@ -92,9 +116,17 @@ class MoveToClean:
             plan = self.move_group.go(wait=True)
             # Calling `stop()` ensures that there is no residual movement
             self.move_group.stop()
+            self.move_group.clear_pose_targets()
+            self.move_group.set_start_state(self.move_group.get_current_state())
+            '''
+        print("- Finished. Returning to home configuration ...")
+        self.return_to_home_conf()
+
+
+
         # It is always good to clear your targets after planning with poses.
         # Note: there is no equivalent function for clear_joint_value_targets()
-        self.move_group.clear_pose_targets()
+        #self.move_group.clear_pose_targets()
         
 
         '''

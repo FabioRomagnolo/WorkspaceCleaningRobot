@@ -64,19 +64,15 @@ class DirtManager:
                 self.current_box += 1
                 model_xml = xacro.process_file(self.xacro_file, mappings=mappings).toxml()
 
-                model_xml = model_xml
-
                 initial_pose = Pose(
                     Point(0.0, 0.0, 0.0),
                     Quaternion(*tf.transformations.quaternion_from_euler(0.0, 0.0, 0.0))
                 )
-                initial_pose = initial_pose
-
 
                 resp1 = spawn_model(
                     model_name=model_name,
-                    model_xml = model_xml,
-                    #initial_pose = initial_pose,
+                    model_xml=model_xml,
+                    #initial_pose=initial_pose,
                 )
                 print('Success: ', resp1.success)
                 print('Status message: ', resp1.status_message)
