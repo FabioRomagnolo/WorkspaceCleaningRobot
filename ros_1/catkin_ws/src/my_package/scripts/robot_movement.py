@@ -40,8 +40,7 @@ class MoveToClean:
 
       
     def coordinates_cb(self, msg):
-        print('Got Coordinates')
-
+        print('------ DIRTY COORDINATES RECEIVED ------')
         points = np.array(msg.data).reshape(-1, 3)
 
         waypoints = []
@@ -53,25 +52,31 @@ class MoveToClean:
             pose_goal.orientation = Quaternion(*tf.transformations.quaternion_from_euler(0.0, np.pi, 0.0))
             pose_goal.position.x = p[0]
             pose_goal.position.y = p[1]
-            pose_goal.position.z = p[2]+0.3
+            # pose_goal.position.z = p[2]+0.3
+            pose_goal.position.z = p[2]
 
             waypoints.append(pose_goal)
 
+        print("- Planning task ...")
         # We want the Cartesian path to be interpolated at a resolution of 1 cm
         # which is why we will specify 0.01 as the eef_step in Cartesian
         # translation.  We will disable the jump threshold by setting it to 0.0,
         # ignoring the check for infeasible jumps in joint space, which is sufficient
         # for this tutorial.
+        # eef_step = 0.01
+        eef_step = 0.001
         plan, fraction = self.move_group.compute_cartesian_path(
-            waypoints, 0.01, 0.0  # waypoints to follow  # eef_step
-        )  # jump_threshold
+            waypoints, eef_step, 0.0  # waypoints to follow  # eef_step  # jump_threshold
+        )  
 
         print('Fraction: ', fraction)
-        #print('Trajectory: ', plan)
+        # print('Trajectory: ', plan)
 
+        print("- Executing task ...")
         self.move_group.execute(plan, wait=True)
 
         # Returning to home configuration of the joints
+        print("- Returning to home configuration ...")
         self.return_to_home_conf()
 
 
@@ -100,6 +105,7 @@ class MoveToClean:
         #current_pose = self.move_group.get_current_pose().pose
         #return all_close(pose_goal, current_pose, 0.01)
         '''
+        print("---------------------------------------")
         return
 
 
