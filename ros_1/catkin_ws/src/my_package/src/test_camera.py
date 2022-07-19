@@ -48,7 +48,7 @@ def callback(image):
 
 	# Getting inputs
 	# Get the background image from another publisher or from a directory
-	bgr = image_file_to_tensor(os.path.join(TEST_IMAGES_DIR, "background.png"))
+	bgr = image_file_to_tensor(os.path.join(OUTPUTS_DIR, "background.png"))
 	# The following input is ONLY FOR BACKGROUND MATTING TESTING!
 	# src = image_file_to_tensor(os.path.join(TEST_IMAGES_DIR, 'dirty_0.png'))
 	# The following input is for PRODUCTION USE
@@ -60,25 +60,30 @@ def callback(image):
 	tfgr = model.matting(src=src, bgr=bgr)
 	inference_seconds = time.time() - start_time
 	print(f"Matting took up {inference_seconds} seconds!")
+	# to_pil_image(tfgr.squeeze(0)).show()
 
 	# Saving matted image
 	print("- Saving matted image to ", os.path.join(OUTPUTS_DIR, 'image_raw_matted.png'))
 	to_pil_image(tfgr.squeeze(0)).save(os.path.join(OUTPUTS_DIR, 'image_raw_matted.png'))
 
 	try:
-		# Reading and publishing matted image
-		print("----- PUBLISHING MATTED IMAGE -----")
-		path_to_matted = os.path.join(OUTPUTS_DIR, 'image_raw_matted.png')
-		matted_cv = cv.imread(path_to_matted, flags=cv.IMREAD_UNCHANGED)
-		
-		# cv.imshow('RGBA image to publish', matted_cv)
-		# cv.waitKey(0) 
-		# cv.destroyAllWindows()
+		# Check empty alpha channel: in that case we don't publish the useless image
+		if np.all((tfgr[:, -1, :, :].numpy() == 0)):
+			print("WARNING! Empy matted image. Skip publishing ...")
+		else:
+			# Reading and publishing matted image
+			print("----- PUBLISHING MATTED IMAGE -----")
+			path_to_matted = os.path.join(OUTPUTS_DIR, 'image_raw_matted.png')
+			matted_cv = cv.imread(path_to_matted, flags=cv.IMREAD_UNCHANGED)
+			
+			# cv.imshow('RGBA image to publish', matted_cv)
+			# cv.waitKey(0) 
+			# cv.destroyAllWindows()
 
-		msg = bridge.cv2_to_imgmsg(matted_cv, encoding="passthrough")
-		pub.publish(msg)
-		print("Matted image published successfully on ", MATTED_TOPIC)
-		print("-----------------------------------")
+			msg = bridge.cv2_to_imgmsg(matted_cv, encoding="passthrough")
+			pub.publish(msg)
+			print("Matted image published successfully on ", MATTED_TOPIC)
+			print("-----------------------------------")
 	except Exception as e:
 		print("WARNING! Can't publish the matted image.\nException: ", e)
 

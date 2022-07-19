@@ -48,7 +48,7 @@ def callback(image):
 	bgra_cv = bridge.imgmsg_to_cv2(image, desired_encoding='passthrough')
 	
 	alpha = bgra_cv[:,:,-1]
-	path_to_alpha = os.path.join(OUTPUTS_DIR, 'alpha_image_raw_matted.jpg')
+	path_to_alpha = os.path.join(OUTPUTS_DIR, 'image_raw_matted_alpha.jpg')
 	print("- Saving alpha channel of matted image to ", path_to_alpha)
 	cv.imwrite(path_to_alpha, alpha)
 
@@ -103,7 +103,7 @@ def callback(image):
 	# Transforming 2D dirty pixels to 3D coordinates w.r.t. camera
 	dirty2camera = transform_pixels2camera(pixels=dirty_2d, camera_info=camera_info, depth=depth)
 	# Rounding coordinates and deleting duplicates
-	dirty2camera = np.unique(np.round(dirty2camera, decimals=2), axis=0)
+	dirty2camera = np.unique(np.round(dirty2camera, decimals=3), axis=0)
 	print(f"Rounded 3D coordinates of pixels w.r.t. camera frame ({dirty2camera.shape}):\n", dirty2camera)
 
 	# Transforming 3D coordinates w.r.t. world
@@ -123,7 +123,7 @@ def callback(image):
 		# Transforming 3D coordinates w.r.t. world: tf implementation
 		dirty2world = transform_points(points=dirty2camera, target_frame='world', source_frame='camera_link_optical')
 		# Rounding coordinates and deleting duplicates
-		dirty2world = np.unique(np.round(dirty2world, decimals=2), axis=0)
+		dirty2world = np.unique(np.round(dirty2world, decimals=3), axis=0)
 		print(f"Rounded 3D coordinates of pixels w.r.t. world frame ({dirty2world.shape}):\n", dirty2world)
 
 	except Exception as e:
