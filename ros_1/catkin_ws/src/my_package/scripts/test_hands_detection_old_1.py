@@ -35,7 +35,7 @@ class HandsDetectionNode:
         self.old_time = time.time()
         self.bridge = CvBridge()
         self.outputs_dir = os.path.join(self.r.get_path(self.package_name), 'outputs')
-        self.cleaning_state = 'check hands'
+        self.cleaning_state = 'not cleaning'
 
         self.pub = rospy.Publisher('background_matting', std_msgs.msg.Empty, queue_size=10)
         self.waiting_states = ['cleaning', 'background matting', 'dirty detection']
@@ -123,18 +123,9 @@ class HandsDetectionNode:
         #     print('Nothing to clean. Waiting')
         #     self.old_time = time.time()
         #     return
-
-        if self.cleaning_state == 'finished cleaning':
-            print('Robot has finished cleaning. Passing to "check hands" state')
-            self.cleaning_state = 'check hands'
-            print('-'*20)
-            return
         
         if self.cleaning_state == 'no dirt':
-            print(f'No dirt on the table. Passing to "check hands" state...')
-            self.cleaning_state = 'check hands'
-            print('-'*20)
-            return
+            print(f'No dirt on the table. Checking if there are hands...')
             ret = self.detect_hands(image_message)
             if ret:
                 print('Hand detected! Changing internal state')
@@ -143,39 +134,7 @@ class HandsDetectionNode:
                 print('No hand detected. Continuing to wait...')
             print('-'*20)
             return
-        
-        if self.cleaning_state == 'check hands':
-            print('Checking if there are hands...')
-            ret = self.detect_hands(image_message)
-            if ret:
-                print('Hand detected! Passing to "wait operator" state')
-                self.cleaning_state = 'wait operator'
-                self.old_time = time.time()
-            else:
-                print('No hand detected. Continuing checking hands')
-            print('-'*20)
-            return
 
-        if self.cleaning_state == 'wait operator':
-            print('Checking if operator hands are still visible...')
-            ret = self.detect_hands(image_message)
-            if ret:
-                print('Hand detected! Continuing to wait operator...')
-                self.old_time = time.time()
-            else:
-                if (time.time() - self.old_time) > self.wait_time:
-                    self.old_time = time.time()
-                    print(f'No hands detected for {self.wait_time} seconds')
-                    print('Publishing message to activate background matting task to detect dirt...')
-                    # Publishing message
-                    self.pub.publish()
-                else:
-                    print(f'No hands detected for {int(time.time() - self.old_time)} seconds. Waiting until {self.wait_time} seconds...')
-            print('-'*20)
-            return
-
-
-        '''
         print('Robot is not cleaning. Performing hands detection...')
         ret = self.detect_hands(image_message)
 
@@ -204,7 +163,6 @@ class HandsDetectionNode:
             self.old_time = time.time()
         
         print('-'*20)
-        '''
         
 
 

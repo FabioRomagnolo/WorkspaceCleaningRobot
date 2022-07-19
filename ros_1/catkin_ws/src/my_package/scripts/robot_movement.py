@@ -148,7 +148,7 @@ class MoveToClean:
         self.return_to_home_conf()
 
         # Publishing state
-        self.cleaning_state_pub.publish('not cleaning')
+        self.cleaning_state_pub.publish('finished cleaning')
 
 
 
