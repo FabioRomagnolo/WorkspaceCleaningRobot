@@ -8,6 +8,7 @@ from std_msgs.msg import UInt32MultiArray, Float32MultiArray
 from sensor_msgs.msg import Image
 import numpy as np
 import tf
+import std_msgs.msg
 
 # creating a class
 class MoveToClean:
@@ -24,6 +25,9 @@ class MoveToClean:
         self.pose_subscriber = rospy.Subscriber('/dirty2world', Float32MultiArray, self.coordinates_cb)
 
         self.cleaning_pose = []
+
+        self.cleaning_state_pub = rospy.Publisher('cleaning_state', std_msgs.msg.String, queue_size=10)
+        self.dirt_manager_pub = rospy.Publisher('dirt_manager/despawn_dirt', std_msgs.msg.Empty, queue_size=10)
     
     def return_to_home_conf(self):
         joint_goal = obj.move_group.get_current_joint_values()
@@ -37,10 +41,15 @@ class MoveToClean:
 
         obj.move_group.go(joint_goal, wait=True)
         obj.move_group.stop()
+        self.move_group.set_start_state(self.move_group.get_current_state())
 
       
     def coordinates_cb(self, msg):
         print('------ DIRTY COORDINATES RECEIVED ------')
+        
+        # Publishing state
+        self.cleaning_state_pub.publish('cleaning')
+
         points = np.array(msg.data).reshape(-1, 3)
 
         waypoints = []
@@ -87,11 +96,22 @@ class MoveToClean:
                 continue
             if i == 1:
                 print(f"- Planning moving to pose {i} from pose {i-1}...")
+
+
                 self.move_group.set_pose_target(goal)
                 plan = self.move_group.go(wait=True)
                 self.move_group.stop()
                 self.move_group.clear_pose_targets()
                 self.move_group.set_start_state(self.move_group.get_current_state())
+
+                # plan, fraction = self.move_group.compute_cartesian_path(
+                #     [waypoints[i]], 0.01, 0.0  # waypoints to follow  # eef_step  # jump_threshold
+                # )
+                # print('Fraction: ', fraction)
+                # self.move_group.execute(plan, wait=True)
+                # self.move_group.stop()
+                # self.move_group.set_start_state(self.move_group.get_current_state())
+
                 continue
 
             # move_points = [
@@ -120,8 +140,15 @@ class MoveToClean:
             self.move_group.clear_pose_targets()
             self.move_group.set_start_state(self.move_group.get_current_state())
             '''
+
+        print('Finished. Despawning dirt...')
+        self.dirt_manager_pub.publish()
+
         print("- Finished. Returning to home configuration ...")
         self.return_to_home_conf()
+
+        # Publishing state
+        self.cleaning_state_pub.publish('not cleaning')
 
 
 

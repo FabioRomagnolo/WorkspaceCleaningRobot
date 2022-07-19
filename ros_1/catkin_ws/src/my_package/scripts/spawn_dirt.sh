@@ -1,0 +1,1 @@
+rostopic pub /dirt_manager/spawn_dirt std_msgs/Empty --once

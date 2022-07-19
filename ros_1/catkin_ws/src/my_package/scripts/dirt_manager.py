@@ -3,7 +3,7 @@ import rospy
 from std_msgs.msg import Empty
 import rospkg
 import os
-from gazebo_msgs.srv import SpawnModel
+from gazebo_msgs.srv import SpawnModel, DeleteModel
 from geometry_msgs.msg import Pose, Quaternion, Point
 import xacro
 import random
@@ -43,8 +43,26 @@ class DirtManager:
         self.xacro_file = os.path.join('..', 'urdf', 'dirt_box.xacro')
         self.num_dirt = 3
         self.current_box = 0
+        self.current_boxes = []
 
-    def dirt_callback(self, data):
+    def dirt_despawn_callback(self, data):
+        print('Despawning dirt...')
+        for dirt_box in self.current_boxes:
+            rospy.wait_for_service('/gazebo/delete_model')
+            try:
+                print(f'Deleting {dirt_box}...')
+                delete_model = rospy.ServiceProxy('/gazebo/delete_model', DeleteModel)
+                resp = delete_model(dirt_box)
+                print('Success: ', resp.success)
+                print('Status message: ', resp.status_message)
+            except Exception as e:
+                print('Error in despawning dirt')
+                print(e)
+        print('Done')
+        self.current_boxes = []
+
+
+    def dirt_spawn_callback(self, data):
         rospy.loginfo(rospy.get_caller_id() + "Message received! Preparing to spawn dirt...")
         for i in range(self.num_dirt):
             rospy.wait_for_service('/gazebo/spawn_urdf_model')
@@ -61,6 +79,7 @@ class DirtManager:
                     'dirt_box_size_xyz': '0.07 0.07 0.07',
                     'dirt_box_xyz': f'{box_x} {box_y} {box_z}'
                 }
+                self.current_boxes.append(model_name)
                 self.current_box += 1
                 model_xml = xacro.process_file(self.xacro_file, mappings=mappings).toxml()
 
@@ -85,6 +104,7 @@ class DirtManager:
 if __name__ == '__main__':
     dirt_manager = DirtManager()
     rospy.init_node('test_dirt_manager', anonymous=True)
-    rospy.Subscriber("/dirt_manager/spawn_dirt", Empty, dirt_manager.dirt_callback)
+    rospy.Subscriber("/dirt_manager/spawn_dirt", Empty, dirt_manager.dirt_spawn_callback)
     # spin() simply keeps python from exiting until this node is stopped
+    rospy.Subscriber("/dirt_manager/despawn_dirt", Empty, dirt_manager.dirt_despawn_callback)
     rospy.spin()
