@@ -2,7 +2,7 @@
 This is an universitary project developed for the "Smart Robotics" course provided by the University of Modena and Reggio Emilia.
 The ROS simulation aims to show the capability of robot to accomplish the task of cleaning a workspace in a collaborative context, using techniques of Deep Learning and Computer Vision together with classical Robotics approaches. 
 
-The robot model seen in the simulation is the following real one: [Franka Emika](https://www.franka.de/).
+The robot model seen in the simulation is the following real one: [Franka Emika Panda](https://www.franka.de/).
 
 # Ros 1 Noetic implementation
 Before starting, install [Ros 1 Noetic](http://wiki.ros.org/noetic/Installation/Ubuntu) on [Ubuntu 20.04.4 (Focal Fossa)](https://releases.ubuntu.com/20.04/).<br>
