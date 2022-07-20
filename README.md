@@ -1,11 +1,14 @@
 # WorkspaceCleaningRobot
+This is an universitary project developed for the "Smart Robotics" course provided by the University of Modena and Reggio Emilia.
+The ROS simulation aims to show the capability of robot to accomplish the task of cleaning a workspace in a collaborative context, using techniques of Deep Learning and Computer Vision together with classical Robotics methods. 
 
-Possibile physical robot: YuMi IRB 14050
+The robot model seen in the simulation is the following real one: [Franka Emika](https://www.franka.de/).
 
-# Ros 1 implementation
+# Ros 1 Noetic implementation
 Before starting, install [Ros 1 Noetic](http://wiki.ros.org/noetic/Installation/Ubuntu) on [Ubuntu 20.04.4 (Focal Fossa)](https://releases.ubuntu.com/20.04/).<br>
 [VMware Workstation 16 Player](https://www.vmware.com/it/products/workstation-player/workstation-player-evaluation.html) is recommended to use, but it is not mandatory.
 
+## Requirements
 After the Ros 1 installation, update the dependancies:
 ```
 cd ros_1/catkin_ws/
@@ -17,23 +20,78 @@ Install the control requirements
 ```
 sudo apt-get update
 sudo apt-get install ros-noetic-ros-controllers ros-noetic-rqt-joint-trajectory-controller ros-noetic-moveit
+```
 
+Install Python 3.8.10 and requirements from relative file
+```
+sudo apt install python3.8
+cd ros_1/catkin_ws/src/my_package/src
+pip install -r requirements.txt
 ```
 
 ## How to use
-Build the project
+### Build
+Build the Ros environment
 ```
 cd ros_1/catkin_ws/
 catkin build my_package
-source devel/setup.bash
 ```
 
-Launch the robot
+### Simulate
+Execute the simulation following these steps after the build commands:
+
+1. Launch the simulation and wait for Gazebo and Rviz to complete loading:
 ```
-roslaunch my_package gazebo.launch
+cd ros_1/catkin_ws/
+source devel/setup.bash
+roslaunch my_package panda_gazebo_moveit.launch
+```
+
+2. Open a new terminal inside root folder and type the following command to start the **control** node drom "scripts" folder.<br>
+   To understand how it works, take a look at [ros_control](http://wiki.ros.org/ros_control) package and [MoveIt](https://moveit.ros.org/).
+```
+cd ros_1/catkin_ws/src/my_package/scripts
+source ../../../devel/setup.bash
+python3 robot_movement.py
+```
+
+3. Open a new tab and start the **hands detector** node from "scritps" folder:
+```
+source ../../../devel/setup.bash
+python3 test_hands_detection.py
+```
+
+4. Open another tab and start the **dirt detector** node from "src" folder:
+```
+source ../../../devel/setup.bash
+cd ../src
+python3 test_dirty_detection_pubsub.py
+```
+
+5. Open another tab and start the **camera** node from "src" folder:
+```
+source ../../../devel/setup.bash
+python3 test_camera_pubsub.py
+```
+
+6. Open another tab and start the **dirt manager** node from "scripts" folder:
+```
+source ../../../devel/setup.bash
+cd ../scripts
+python3 dirt_manager.py
+```
+
+7. Open the last tab inside "scripts" folder and **spawn/despawn** person and dirt to see the simulated cleaning process!
+```
+source ../../../devel/setup.bash
+./spawn_person.sh
+./spawn_dirt.sh
+./despawn_dirt.sh
 ```
 
 # Ros 2 implementation
+***WARNING**: This implementation is incomplete. See Ros 1 implementation above to see execute the full simulation.*
+
 Before starting, install [Ros 2 Foxy](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html) on [Ubuntu 20.04.4 (Focal Fossa)](https://releases.ubuntu.com/20.04/).<br>
 [VMware Workstation 16 Player](https://www.vmware.com/it/products/workstation-player/workstation-player-evaluation.html) is recommended to use, but it is not mandatory.
 
