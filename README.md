@@ -95,7 +95,7 @@ source ../../../devel/setup.bash
 
 8. Enjoy the cleaning process!
 
-# Ros 2 implementation
+# Ros 2 Foxy implementation
 ***WARNING**: This implementation is incomplete. See Ros 1 implementation above to see execute the full simulation.*
 
 Before starting, install [Ros 2 Foxy](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html) on [Ubuntu 20.04.4 (Focal Fossa)](https://releases.ubuntu.com/20.04/).<br>
