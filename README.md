@@ -1,6 +1,6 @@
 # WorkspaceCleaningRobot
 This is an universitary project developed for the "Smart Robotics" course provided by the University of Modena and Reggio Emilia.
-The ROS simulation aims to show the capability of robot to accomplish the task of cleaning a workspace in a collaborative context, using techniques of Deep Learning and Computer Vision together with classical Robotics methods. 
+The ROS simulation aims to show the capability of robot to accomplish the task of cleaning a workspace in a collaborative context, using techniques of Deep Learning and Computer Vision together with classical Robotics approaches. 
 
 The robot model seen in the simulation is the following real one: [Franka Emika](https://www.franka.de/).
 
@@ -9,9 +9,10 @@ Before starting, install [Ros 1 Noetic](http://wiki.ros.org/noetic/Installation/
 [VMware Workstation 16 Player](https://www.vmware.com/it/products/workstation-player/workstation-player-evaluation.html) is recommended to use, but it is not mandatory.
 
 ## Requirements
-After the Ros 1 installation, update the dependancies:
+After the Ros 1 installation, clone the repository and update the Ros dependancies:
 ```
-cd ros_1/catkin_ws/
+git clone https://github.com/FabioRomagnolo/WorkspaceCleaningRobot.git
+cd WorskspaceCleaningRobot/ros_1/catkin_ws/
 rosdep update
 rosdep install --from-paths src --ignore-src -r -y --rosdistro noetic
 ```
