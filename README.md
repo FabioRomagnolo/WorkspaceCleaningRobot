@@ -17,12 +17,6 @@ rosdep update
 rosdep install --from-paths src --ignore-src -r -y --rosdistro noetic
 ```
 
-Install the control requirements
-```
-sudo apt-get update
-sudo apt-get install ros-noetic-ros-controllers ros-noetic-rqt-joint-trajectory-controller ros-noetic-moveit
-```
-
 Install Python 3.8.10 and requirements from relative file
 ```
 sudo apt install python3.8
@@ -41,14 +35,14 @@ catkin build my_package
 ### Simulate
 Execute the simulation following these steps after the build commands:
 
-1. Launch the simulation and wait for Gazebo and Rviz to complete loading:
+1. **Launch** the simulation and wait for Gazebo and Rviz to complete loading:
 ```
 cd ros_1/catkin_ws/
 source devel/setup.bash
 roslaunch my_package panda_gazebo_moveit.launch
 ```
 
-2. Open a new terminal inside root folder and type the following command to start the **control** node drom "scripts" folder.<br>
+2. Open a new terminal inside root folder and type the following command to **start the control** node drom "scripts" folder.<br>
    To understand how it works, take a look at [ros_control](http://wiki.ros.org/ros_control) package and [MoveIt](https://moveit.ros.org/).
 ```
 cd ros_1/catkin_ws/src/my_package/scripts
@@ -56,39 +50,44 @@ source ../../../devel/setup.bash
 python3 robot_movement.py
 ```
 
-3. Open a new tab and start the **hands detector** node from "scritps" folder:
+3. Open a new tab and **start the hands detector** node from "scritps" folder:
 ```
 source ../../../devel/setup.bash
 python3 test_hands_detection.py
 ```
 
-4. Open another tab and start the **dirt detector** node from "src" folder:
+4. Open another tab and **start the dirt detector** node from "src" folder:
 ```
 source ../../../devel/setup.bash
 cd ../src
 python3 test_dirty_detection_pubsub.py
 ```
 
-5. Open another tab and start the **camera** node from "src" folder:
+5. Open another tab and **start the camera** node from "src" folder:
 ```
 source ../../../devel/setup.bash
 python3 test_camera_pubsub.py
 ```
 
-6. Open another tab and start the **dirt manager** node from "scripts" folder:
+6. Open another tab and **start the dirt manager** node from "scripts" folder:
 ```
 source ../../../devel/setup.bash
 cd ../scripts
 python3 dirt_manager.py
 ```
 
-7. Open the last tab inside "scripts" folder and **spawn/despawn** person and dirt to see the simulated cleaning process!
+7. Open the last tab inside "scripts" folder and:
+   1. **spawn** person
+   2. **spawn** dirt
+   3. **despawn** person
 ```
 source ../../../devel/setup.bash
 ./spawn_person.sh
 ./spawn_dirt.sh
-./despawn_dirt.sh
+./despawn_person.sh
 ```
+
+8. Enjoy the cleaning process!
 
 # Ros 2 implementation
 ***WARNING**: This implementation is incomplete. See Ros 1 implementation above to see execute the full simulation.*
