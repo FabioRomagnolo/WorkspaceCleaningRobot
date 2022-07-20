@@ -23,6 +23,12 @@ sudo apt install python3.8
 cd ros_1/catkin_ws/src/my_package/src
 pip install -r requirements.txt
 ```
+In order to use the [**Background Matting**](https://grail.cs.washington.edu/projects/background-matting-v2/#/) network you need to get the trained weights _.pth_ files
+and place them into the ros_1/catkin_ws/src/my_package/src/BackgroundMatting/trained_models folder.<br>
+Also the **Hands Detection** component needs the relative trained weights, but inside the ros_1/catkin_ws/src/my_package/pytorch_saves folder.
+
+
+You can download the ready-to-use models [**here**](https://drive.google.com/drive/folders/1ATia3j63tpFYbXQWUwu_2Aegj3vi3okt?usp=sharing).
 
 ## How to use
 ### Build
@@ -147,8 +153,3 @@ ros2 control list_hardware_interfaces
 ros2 control list_controllers
 ```
 You should see _claimed_ command interfaces and _active_ controllers.
-
-# Background Matting
-In order to use [Background Matting](https://grail.cs.washington.edu/projects/background-matting-v2/#/) network you need to get the pretrained weights _.pth_ files
-and place them into the _src/my_package/my_package/BackgroundMatting/trained_models_ folder.<br>
-You can download the ready-to-use models [here](https://drive.google.com/drive/folders/1vaTjLTk2CoNzMOgeO70Tjsn5DlFF_cJH?usp=sharing).
