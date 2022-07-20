@@ -77,6 +77,8 @@ def callback(data):
 		# Check empty alpha channel: in that case we don't publish the useless image
 		if np.all((tfgr[:, -1, :, :].numpy() == 0)):
 			print("WARNING! Empy matted image. Skip publishing ...")
+			# Publishing state
+			cleaning_state_pub.publish('no dirt')
 		else:
 			# Reading and publishing matted image
 			print("----- PUBLISHING MATTED IMAGE -----")
