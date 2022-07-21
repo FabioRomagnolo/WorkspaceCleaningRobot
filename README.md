@@ -1,9 +1,10 @@
-# WorkspaceCleaningRobot
+# Workspace Cleaning Robot
 This is an universitary project developed for the "Smart Robotics" course provided by the University of Modena and Reggio Emilia.
 The ROS simulation aims to show the capability of robot to accomplish the task of cleaning a workspace in a collaborative context, using techniques of Deep Learning and Computer Vision together with classical Robotics approaches. 
 
 The robot model seen in the simulation is the following real one: [Franka Emika Panda](https://www.franka.de/).
 
+You can find a presentation of the project [here](https://docs.google.com/presentation/d/1AMyCptXG8nO6M-djotgVLqGRbKvygzd9/edit?usp=sharing&ouid=117131816369557009344&rtpof=true&sd=true).<br>
 Authors: Martin Menabue, Fabio Romagnolo, Giammarco Dattoli.
 
 # Ros 1 Noetic implementation
@@ -140,7 +141,7 @@ ros2 launch my_package display.launch.py
 ros2 launch my_package display_sim.launch.py
 ```
 
-## Control simulation
+#### Control simulation
 Before starting, install the needed packages for Foxy:
 ```
 sudo apt install ros-foxy-ros2-control ros-foxy-ros2-controllers ros-foxy-gazebo-ros2-control
